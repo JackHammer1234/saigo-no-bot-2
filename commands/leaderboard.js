@@ -1,4 +1,3 @@
-const { Client, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
 const path = require("path");
 const economiaPath = path.resolve(__dirname, "../data/economia.json");
@@ -12,15 +11,15 @@ module.exports = {
     }
 
     const data = JSON.parse(fs.readFileSync(economiaPath));
+
     const sorted = Object.entries(data)
-      .sort(([, a], [, b]) => b.dinero - a.dinero)
-      .slice(0, 10); // Top 10
+      .sort(([, a], [, b]) => b.dinero - a.dinero); // Ya sin .slice(0, 10)
 
     if (sorted.length === 0) {
       return message.reply("No hay datos de economía.");
     }
 
-    let texto = "__**TOP DE RYO 💰:**__\n\n";
+    let texto = "__**RANKING DE RYO 💰:**__\n\n";
 
     for (let i = 0; i < sorted.length; i++) {
       const [id, usuario] = sorted[i];
@@ -28,7 +27,7 @@ module.exports = {
 
       try {
         const user = await message.client.users.fetch(id);
-        nombre = `<@${user.id}>`; // 👈 Aquí se pingea al usuario
+        nombre = user.username; // Sin ping, solo nombre de usuario
       } catch {
         nombre = `Usuario desconocido (${id})`;
       }
@@ -36,6 +35,10 @@ module.exports = {
       texto += `**${i + 1}.** ${nombre}: ${usuario.dinero} ryo\n`;
     }
 
-    message.reply(texto);
+    // Si es muy largo, se parte en varios mensajes (Discord tiene límite de 2000 caracteres por mensaje)
+    const partes = texto.match(/[\s\S]{1,1900}/g); // Deja margen por si acaso
+    for (const parte of partes) {
+      await message.channel.send(parte);
+    }
   },
 };
