@@ -63,9 +63,17 @@ function quitarItem(id, itemKey) {
   return false;
 }
 
+function setDinero(id, cantidad) {
+  const economia = leerEconomia();
+  asegurarUsuario(id);
+  economia[id].dinero = cantidad;
+  guardarEconomia(economia);
+}
+
 module.exports = {
   obtenerDinero,
   modificarDinero,
+  SetDinero,
   obtenerInventario,
   agregarItem,
   quitarItem,
