@@ -36,7 +36,19 @@ for (const file of commandFiles) {
 // Evento: listo
 client.once(Events.ClientReady, () => {
   console.log(`✅ Bot iniciado como ${client.user.tag}`);
+
+  const canalId = "1225924380664791171"; 
+  const canal = client.channels.cache.get(canalId);
+
+  if (canal) {
+    canal.send("Commit done");
+  } else {
+    console.log("No encontré el canal para enviar el mensaje.");
+  }
 });
+
+
+
 
 // Evento: mensaje
 client.on(Events.MessageCreate, (message) => {
