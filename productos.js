@@ -52,7 +52,6 @@ const productos = {
   KS: { nombre: "Katana Samurái", precio: 1000, categoria: "Armas" },
   KH: { nombre: "Kunai con hilo", precio: 1000, categoria: "Armas" },
   GF: { nombre: "Guadaña de 2 filos", precio: 1200, categoria: "Armas" },
-  EA: { nombre: "Estilo acrobático", precio: 1400, categoria: "Armas" },
   SF: { nombre: "Sound flute", precio: 2000, categoria: "Armas" },
   TC: { nombre: "Tanto de césped", precio: 2000, categoria: "Armas" },
   UG: { nombre: "Umpire Guitar", precio: 2000, categoria: "Armas" },
