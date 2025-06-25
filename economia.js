@@ -73,7 +73,7 @@ function setDinero(id, cantidad) {
 module.exports = {
   obtenerDinero,
   modificarDinero,
-  SetDinero,
+  setDinero,
   obtenerInventario,
   agregarItem,
   quitarItem,
