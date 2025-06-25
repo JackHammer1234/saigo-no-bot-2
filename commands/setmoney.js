@@ -1,9 +1,8 @@
-const fs = require('fs');
-const money = require('../../money.json');
+const { setDinero } = require('../../economia');
 
 module.exports = {
   name: 'setmoney',
-  description: 'Establece la cantidad de dinero de un usuario.',
+  description: 'Establece el dinero de un usuario a una cantidad específica.',
   usage: '!setmoney @usuario cantidad',
   execute(message, args) {
     if (!message.member.permissions.has('ADMINISTRATOR')) {
@@ -13,15 +12,12 @@ module.exports = {
     const user = message.mentions.users.first();
     if (!user) return message.reply('Debes mencionar a un usuario.');
 
-    const amount = parseInt(args[1]);
-    if (isNaN(amount)) return message.reply('Debes especificar una cantidad válida.');
+    const amount = parseInt(args[1], 10);
+    if (isNaN(amount)) return message.reply('Cantidad inválida.');
 
-    // Establecer la cantidad
-    money[user.id] = amount;
+    setDinero(user.id, amount);
 
-    // Guardar el archivo JSON
-    fs.writeFileSync('./money.json', JSON.stringify(money, null, 2));
-
-    message.channel.send(`El dinero de ${user.username} se ha establecido a ${amount} monedas.`);
+    message.channel.send(`El dinero de ${user.username} se ha establecido en ${amount}.`);
   },
 };
+
