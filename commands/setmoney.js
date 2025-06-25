@@ -1,4 +1,4 @@
-const { setDinero } = require('../../economia');
+const { setDinero } = require('../economia');
 
 module.exports = {
   name: 'setmoney',
