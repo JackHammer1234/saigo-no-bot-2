@@ -1,4 +1,14 @@
 require("dotenv").config();
+
+const conectarDB = require("./db");
+conectarDB();
+
+const economia = require("./path/to/economia.js");
+
+
+
+
+
 require("./server"); // Esto mantiene el bot "vivo" para UptimeRobot
 
 const fs = require("fs");
@@ -68,4 +78,9 @@ client.on(Events.MessageCreate, (message) => {
   }
 });
 
-client.login(process.env.TOKEN);
+(async () => {
+  await economia.conectarDB(process.env.MONGO_URI);
+
+
+  client.login(process.env.TOKEN);
+})();

@@ -1,11 +1,12 @@
 const { setDinero } = require('../economia');
+const { PermissionsBitField } = require('discord.js');
 
 module.exports = {
   name: 'setmoney',
   description: 'Establece el dinero de un usuario a una cantidad específica.',
   usage: '!setmoney @usuario cantidad',
-  execute(message, args) {
-    if (!message.member.permissions.has('ADMINISTRATOR')) {
+  async execute(message, args) {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
       return message.reply('No tienes permiso para usar este comando.');
     }
 
@@ -15,9 +16,13 @@ module.exports = {
     const amount = parseInt(args[1], 10);
     if (isNaN(amount)) return message.reply('Cantidad inválida.');
 
-    setDinero(user.id, amount);
-
-    message.channel.send(`El dinero de ${user.username} se ha establecido en ${amount}.`);
+    try {
+      await setDinero(user.id, amount);
+      message.channel.send(`El dinero de ${user.username} se ha establecido en ${amount}.`);
+    } catch (error) {
+      console.error(error);
+      message.reply('Ocurrió un error al establecer el dinero.');
+    }
   },
 };
 

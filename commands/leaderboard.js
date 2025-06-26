@@ -1,44 +1,44 @@
-const fs = require("fs");
-const path = require("path");
-const economiaPath = path.resolve(__dirname, "../data/economia.json");
+const economia = require("../economia");
 
 module.exports = {
   name: "leaderboard",
   description: "Muestra el ranking de usuarios con más ryo.",
   async execute(message) {
-    if (!fs.existsSync(economiaPath)) {
-      return message.reply("No hay datos de economía aún.");
-    }
+    try {
+      // Obtener todos los usuarios con dinero
+      const todos = await economia.obtenerTodos(); // Este método debe devolver un array [{id, dinero, inventario}, ...]
 
-    const data = JSON.parse(fs.readFileSync(economiaPath));
-
-    const sorted = Object.entries(data)
-      .sort(([, a], [, b]) => b.dinero - a.dinero); // Ya sin .slice(0, 10)
-
-    if (sorted.length === 0) {
-      return message.reply("No hay datos de economía.");
-    }
-
-    let texto = "__**RANKING DE RYO 💰:**__\n\n";
-
-    for (let i = 0; i < sorted.length; i++) {
-      const [id, usuario] = sorted[i];
-      let nombre;
-
-      try {
-        const user = await message.client.users.fetch(id);
-        nombre = user.username; // Sin ping, solo nombre de usuario
-      } catch {
-        nombre = `Usuario desconocido (${id})`;
+      if (!todos || todos.length === 0) {
+        return message.reply("No hay datos de economía.");
       }
 
-      texto += `**${i + 1}.** ${nombre}: ${usuario.dinero} ryo\n`;
-    }
+      // Ordenar de mayor a menor
+      const sorted = todos.sort((a, b) => b.dinero - a.dinero);
 
-    // Si es muy largo, se parte en varios mensajes (Discord tiene límite de 2000 caracteres por mensaje)
-    const partes = texto.match(/[\s\S]{1,1900}/g); // Deja margen por si acaso
-    for (const parte of partes) {
-      await message.channel.send(parte);
+      let texto = "__**RANKING DE RYO 💰:**__\n\n";
+
+      for (let i = 0; i < sorted.length; i++) {
+        const { id, dinero } = sorted[i];
+        let nombre;
+
+        try {
+          const user = await message.client.users.fetch(id);
+          nombre = user.username;
+        } catch {
+          nombre = `Usuario desconocido (${id})`;
+        }
+
+        texto += `**${i + 1}.** ${nombre}: ${dinero} ryo\n`;
+      }
+
+      // Partir mensajes largos
+      const partes = texto.match(/[\s\S]{1,1900}/g);
+      for (const parte of partes) {
+        await message.channel.send(parte);
+      }
+    } catch (error) {
+      console.error(error);
+      message.reply("Error al obtener el ranking.");
     }
   },
 };

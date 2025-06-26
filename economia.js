@@ -1,73 +1,91 @@
-const fs = require("fs");
-const path = require("path");
-const economiaPath = path.resolve(__dirname, "./data/economia.json");
+const mongoose = require("mongoose");
 
-function leerEconomia() {
-  if (!fs.existsSync(economiaPath)) fs.writeFileSync(economiaPath, "{}");
-  const data = fs.readFileSync(economiaPath);
-  return JSON.parse(data);
-}
+const Economia = require("./models/eeconomia.js"); // Si `economia.js` está en raíz
 
-function guardarEconomia(data) {
-  fs.writeFileSync(economiaPath, JSON.stringify(data, null, 2));
-}
 
-function asegurarUsuario(id) {
-  const economia = leerEconomia();
-  if (!economia[id]) {
-    economia[id] = { dinero: 0, inventario: {} };
-    guardarEconomia(economia);
+
+// Función para asegurar que el usuario existe en DB
+async function asegurarUsuario(userId) {
+  let user = await Economia.findOne({ userId });
+  if (!user) {
+    user = new Economia({ userId });
+    await user.save();
   }
+  return user;
 }
 
-function obtenerDinero(id) {
-  asegurarUsuario(id);
-  return leerEconomia()[id].dinero;
+// Obtener todos los usuarios (para leaderboard etc)
+async function obtenerTodos() {
+  const usuarios = await Economia.find({});
+  return usuarios.map(u => ({
+    id: u.userId,
+    dinero: u.dinero,
+    inventario: Object.fromEntries(u.inventario || []),
+  }));
 }
 
-function modificarDinero(id, cantidad) {
-  const economia = leerEconomia();
-  asegurarUsuario(id);
-  economia[id].dinero += cantidad;
-  guardarEconomia(economia);
+// Obtener dinero
+async function obtenerDinero(userId) {
+  const user = await asegurarUsuario(userId);
+  return user.dinero;
 }
 
-function quitarDinero(id, cantidad) {
-  modificarDinero(id, -cantidad);
+// Modificar dinero (suma o resta)
+async function modificarDinero(userId, cantidad) {
+  const user = await asegurarUsuario(userId);
+  user.dinero += cantidad;
+  await user.save();
 }
 
-function obtenerInventario(id) {
-  asegurarUsuario(id);
-  return leerEconomia()[id].inventario || {};
+// Quitar dinero
+async function quitarDinero(userId, cantidad) {
+  await modificarDinero(userId, -cantidad);
 }
 
-function agregarItem(id, itemKey) {
-  const economia = leerEconomia();
-  asegurarUsuario(id);
-  economia[id].inventario[itemKey] =
-    (economia[id].inventario[itemKey] || 0) + 1;
-  guardarEconomia(economia);
+// Obtener inventario (convertir Map a objeto)
+async function obtenerInventario(userId) {
+  const user = await asegurarUsuario(userId);
+  return Object.fromEntries(user.inventario || []);
 }
 
-function quitarItem(id, itemKey) {
-  const economia = leerEconomia();
-  asegurarUsuario(id);
-  if (economia[id].inventario[itemKey]) {
-    economia[id].inventario[itemKey]--;
-    if (economia[id].inventario[itemKey] <= 0) {
-      delete economia[id].inventario[itemKey];
+// Agregar item al inventario
+async function agregarItem(userId, itemKey) {
+  const user = await asegurarUsuario(userId);
+  const current = user.inventario.get(itemKey) || 0;
+  user.inventario.set(itemKey, current + 1);
+  await user.save();
+}
+
+// Quitar item del inventario
+async function quitarItem(userId, itemKey) {
+  const user = await asegurarUsuario(userId);
+  const current = user.inventario.get(itemKey) || 0;
+  if (current > 0) {
+    if (current === 1) {
+      user.inventario.delete(itemKey);
+    } else {
+      user.inventario.set(itemKey, current - 1);
     }
-    guardarEconomia(economia);
+    await user.save();
     return true;
   }
   return false;
 }
 
-function setDinero(id, cantidad) {
-  const economia = leerEconomia();
-  asegurarUsuario(id);
-  economia[id].dinero = cantidad;
-  guardarEconomia(economia);
+// Setear dinero directo
+async function setDinero(userId, cantidad) {
+  const user = await asegurarUsuario(userId);
+  user.dinero = cantidad;
+  await user.save();
+}
+
+// Conectar a MongoDB
+async function conectarDB(uri) {
+  await mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  console.log("✅ Conectado a MongoDB");
 }
 
 module.exports = {
@@ -78,4 +96,6 @@ module.exports = {
   agregarItem,
   quitarItem,
   quitarDinero,
+  obtenerTodos,
+  conectarDB,
 };
