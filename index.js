@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const conectarDB = require("./db");
-const Economia = require("./models/economia.js");
+const Economia = require("./models/eeconomia.js");
 
 const { Client, GatewayIntentBits, Collection, Events } = require("discord.js");
 const fs = require("fs");
