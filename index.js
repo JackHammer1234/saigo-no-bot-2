@@ -3,6 +3,9 @@ require("dotenv").config();
 const conectarDB = require("./db");
 const Economia = require("./models/eeconomia.js");
 
+const express = require("express");
+const app = express();
+
 const { Client, GatewayIntentBits, Collection, Events } = require("discord.js");
 const fs = require("fs");
 const path = require("path");
@@ -34,6 +37,15 @@ for (const file of commandFiles) {
     console.warn(`⚠️ El comando en ${file} no tiene "name" o "execute".`);
   }
 }
+
+// Servidor Express mínimo para Render
+const PORT = process.env.PORT || 3000;
+app.get("/", (req, res) => {
+  res.send("Bot activo");
+});
+app.listen(PORT, () => {
+  console.log(`Servidor web activo en el puerto ${PORT}`);
+});
 
 // Evento listo
 client.once(Events.ClientReady, () => {
@@ -74,3 +86,4 @@ async function iniciar() {
 }
 
 iniciar();
+
