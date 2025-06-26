@@ -2,6 +2,7 @@
   "name": "mi-bot",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node index.js"
   },
@@ -17,3 +18,4 @@
     "mongoose": "^7.6.0"
   }
 }
+
