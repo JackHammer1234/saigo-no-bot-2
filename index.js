@@ -1,21 +1,11 @@
 require("dotenv").config();
 
 const conectarDB = require("./db");
-conectarDB();
+const Economia = require("./models/economia.js");
 
-const economia = require("./economia");
-
-await economia.conectarDB(process.env.MONGO_URI);
-
-
-
-
-
-require("./server"); // Esto mantiene el bot "vivo" para UptimeRobot
-
+const { Client, GatewayIntentBits, Collection, Events } = require("discord.js");
 const fs = require("fs");
 const path = require("path");
-const { Client, GatewayIntentBits, Collection, Events } = require("discord.js");
 
 const client = new Client({
   intents: [
@@ -31,7 +21,7 @@ const client = new Client({
 const prefix = "!";
 client.commands = new Collection();
 
-// Cargar comandos desde la carpeta "commands"
+// Cargar comandos
 const commandFiles = fs
   .readdirSync(path.join(__dirname, "commands"))
   .filter((file) => file.endsWith(".js"));
@@ -45,11 +35,11 @@ for (const file of commandFiles) {
   }
 }
 
-// Evento: listo
+// Evento listo
 client.once(Events.ClientReady, () => {
   console.log(`✅ Bot iniciado como ${client.user.tag}`);
 
-  const canalId = "1225924380664791171"; 
+  const canalId = "1225924380664791171";
   const canal = client.channels.cache.get(canalId);
 
   if (canal) {
@@ -59,10 +49,7 @@ client.once(Events.ClientReady, () => {
   }
 });
 
-
-
-
-// Evento: mensaje
+// Evento mensaje
 client.on(Events.MessageCreate, (message) => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
@@ -80,9 +67,10 @@ client.on(Events.MessageCreate, (message) => {
   }
 });
 
-(async () => {
-  await economia.conectarDB(process.env.MONGO_URI);
-
-
+// Función async para conectar DB y luego iniciar bot
+async function iniciar() {
+  await conectarDB(process.env.MONGO_URI);
   client.login(process.env.TOKEN);
-})();
+}
+
+iniciar();
