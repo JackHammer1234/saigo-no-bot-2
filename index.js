@@ -3,7 +3,9 @@ require("dotenv").config();
 const conectarDB = require("./db");
 conectarDB();
 
-const Economia = require("./economia.js")
+const economia = require("./economia");
+
+await economia.conectarDB(process.env.MONGO_URI);
 
 
 
