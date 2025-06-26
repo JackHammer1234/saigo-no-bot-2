@@ -3,7 +3,7 @@ require("dotenv").config();
 const conectarDB = require("./db");
 conectarDB();
 
-const economia = require("./path/to/economia.js");
+const Economia = require("./models/eeconomia.js")
 
 
 
