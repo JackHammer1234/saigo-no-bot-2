@@ -10,8 +10,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle("`COMANDOS DISPONIBLES`") // ENCABEZADO CON FORMATO
       .setDescription(
-        "--------------------------------------------------------------------------------------\n" + // SEPARADOR
-        "Lista de comandos que puedes usar:\n\n" +
+        "------------------------------------------------------\n" + 
         "**Comandos disponibles:**\n" +
         `${nombres}`
       )
