@@ -12,7 +12,7 @@ module.exports = {
       return message.reply("Debes especificar el nombre del objeto que quieres comprar.");
     }
 
-    const item = tienda.find(i => i.nombre.toLowerCase() === objeto.toLowerCase());
+    const item = productos.find(i => i.nombre.toLowerCase() === objeto.toLowerCase());
     if (!item) {
       return message.reply("Ese objeto no está en la tienda.");
     }
