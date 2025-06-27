@@ -2,11 +2,10 @@ const { quitarDinero, obtenerDinero, agregarItem } = require("../economia");
 const productos = require("../productos");
 
 module.exports = {
-  name: "comprar",  // <-- aquí cambias el nombre del comando
+  name: "comprar",
   description: "Compra productos en la tienda o muestra la lista si no especificas nada",
-  execute(message, args) {
+  async execute(message, args) { // <- IMPORTANTE: async
     if (!args.length) {
-      // Mostrar productos agrupados por categoría
       const categorias = {};
 
       for (const key in productos) {
@@ -29,9 +28,8 @@ module.exports = {
       return message.reply(lista.trim());
     }
 
-    // Comprar producto
     const productoCodigo = args[0].toUpperCase();
-    const cantidad = parseInt(args[1]) || 1; // Por defecto 1
+    const cantidad = parseInt(args[1]) || 1;
 
     if (!productos[productoCodigo])
       return message.reply("Producto no encontrado.");
@@ -41,16 +39,17 @@ module.exports = {
 
     const producto = productos[productoCodigo];
     const total = producto.precio * cantidad;
-    const dinero = obtenerDinero(message.author.id);
+
+    const dinero = await obtenerDinero(message.author.id); // <- AWAIT AQUÍ
 
     if (dinero < total)
       return message.reply(
         `No tienes suficiente ryo. Necesitas ${total} ryo para comprar ${cantidad} ${producto.nombre}.`
       );
 
-    quitarDinero(message.author.id, total);
+    await quitarDinero(message.author.id, total);
     for (let i = 0; i < cantidad; i++) {
-      agregarItem(message.author.id, productoCodigo);
+      await agregarItem(message.author.id, productoCodigo);
     }
 
     return message.reply(
@@ -61,3 +60,4 @@ module.exports = {
   },
   productos,
 };
+
