@@ -2,7 +2,6 @@ const { EmbedBuilder } = require("discord.js");
 const economia = require("../models/eeconomia.js");
 const productos = require("../productos");
 
-
 module.exports = {
   name: "comprar",
   description: "Compra un objeto de la tienda.",
@@ -12,7 +11,11 @@ module.exports = {
       return message.reply("Debes especificar el nombre del objeto que quieres comprar.");
     }
 
-    const item = productos.find(i => i.nombre.toLowerCase() === objeto.toLowerCase());
+    // Convertimos productos (objeto) en arreglo y buscamos por nombre
+    const item = Object.values(productos).find(i =>
+      i.nombre.toLowerCase() === objeto.toLowerCase()
+    );
+
     if (!item) {
       return message.reply("Ese objeto no está en la tienda.");
     }
@@ -44,3 +47,4 @@ module.exports = {
     message.channel.send({ embeds: [embed] });
   },
 };
+
