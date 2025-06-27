@@ -6,27 +6,27 @@ module.exports = {
   name: "comprar",
   description: "Compra un objeto de la tienda.",
   async execute(message, args) {
-    const clave = args[0]?.toUpperCase(); // Convertimos a mayúsculas para coincidir con las claves
+    const clave = args[0]?.toUpperCase(); // Código como "PV", "LB1", etc.
     if (!clave) {
-      return message.reply("Debes especificar el código del objeto que quieres comprar.");
+      return message.reply("Debes escribir el código del producto. Ejemplo: `!comprar PV`");
     }
 
     const item = productos[clave];
 
     if (!item) {
-      return message.reply("Ese objeto no está en la tienda.");
+      return message.reply(`❌ Ese producto no existe. Usa \`!tienda\` para ver la lista de códigos válidos.`);
     }
 
     const usuario = await economia.obtenerUsuario(message.author.id);
     if (!usuario) {
-      return message.reply("No tienes datos económicos. Usa otro comando primero.");
+      return message.reply("No tienes perfil económico. Usa otro comando primero.");
     }
 
     if (usuario.dinero < item.precio) {
-      return message.reply("No tienes suficiente ryo para comprar este objeto.");
+      return message.reply(`No tienes suficiente ryo. Te faltan **${item.precio - usuario.dinero}** ryo.`);
     }
 
-    // Restar dinero y agregar al inventario
+    // Realizar compra
     usuario.dinero -= item.precio;
     usuario.inventario.push(clave); // Guardamos el código, no el nombre
 
@@ -41,6 +41,7 @@ module.exports = {
       )
       .setColor(0x00ff99);
 
-    message.channel.send({ embeds: [embed] });
+    return message.channel.send({ embeds: [embed] });
   },
 };
+
