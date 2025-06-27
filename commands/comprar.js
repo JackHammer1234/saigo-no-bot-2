@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const economia = require("../models/eeconomia.js");
-const tienda = require("../tienda.json");
+const productos = require("../productos");
+
 
 module.exports = {
   name: "comprar",
