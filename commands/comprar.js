@@ -6,15 +6,12 @@ module.exports = {
   name: "comprar",
   description: "Compra un objeto de la tienda.",
   async execute(message, args) {
-    const objeto = args[0];
-    if (!objeto) {
-      return message.reply("Debes especificar el nombre del objeto que quieres comprar.");
+    const clave = args[0]?.toUpperCase(); // Convertimos a mayúsculas para coincidir con las claves
+    if (!clave) {
+      return message.reply("Debes especificar el código del objeto que quieres comprar.");
     }
 
-    // Convertimos productos (objeto) en arreglo y buscamos por nombre
-    const item = Object.values(productos).find(i =>
-      i.nombre.toLowerCase() === objeto.toLowerCase()
-    );
+    const item = productos[clave];
 
     if (!item) {
       return message.reply("Ese objeto no está en la tienda.");
@@ -31,7 +28,7 @@ module.exports = {
 
     // Restar dinero y agregar al inventario
     usuario.dinero -= item.precio;
-    usuario.inventario.push(item.nombre);
+    usuario.inventario.push(clave); // Guardamos el código, no el nombre
 
     await economia.actualizarUsuario(message.author.id, usuario);
 
@@ -47,4 +44,3 @@ module.exports = {
     message.channel.send({ embeds: [embed] });
   },
 };
-
