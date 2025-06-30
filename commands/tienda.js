@@ -2,7 +2,7 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("
 const productos = require("../productos");
 
 module.exports = {
-  name: "tienda2",
+  name: "comprar",
   description: "Muestra la tienda por categorías y te permite comprar con !comprar clave",
   async execute(message, args) {
     if (args.length) return; // no hacemos compra aquí, solo mostramos tienda
