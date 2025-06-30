@@ -1,12 +1,54 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const {
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} = require("discord.js");
 const productos = require("../productos");
+const {
+  obtenerDinero,
+  quitarDinero,
+  agregarItem,
+} = require("../economia");
 
 module.exports = {
   name: "comprar",
-  description: "Muestra la tienda por categorías y te permite comprar con !comprar clave",
+  description:
+    "Muestra la tienda por categorías o compra un producto con !comprar CLAVE [cantidad]",
   async execute(message, args) {
-    if (args.length) return; // no hacemos compra aquí, solo mostramos tienda
+    // ---------- SI ES UNA COMPRA ----------
+    if (args.length > 0) {
+      const productoCodigo = args[0].toUpperCase();
+      const cantidad = parseInt(args[1]) || 1;
 
+      if (!productos[productoCodigo])
+        return message.reply("Producto no encontrado.");
+      if (cantidad <= 0)
+        return message.reply("La cantidad debe ser mayor que 0.");
+
+      const producto = productos[productoCodigo];
+      const total = producto.precio * cantidad;
+      const dinero = await obtenerDinero(message.author.id);
+
+      if (dinero < total) {
+        return message.reply(
+          `No tienes suficiente ryo. Necesitas ${total} ryo para comprar ${cantidad} ${producto.nombre}.`
+        );
+      }
+
+      await quitarDinero(message.author.id, total);
+      for (let i = 0; i < cantidad; i++) {
+        await agregarItem(message.author.id, productoCodigo);
+      }
+
+      return message.reply(
+        `🛒 Has comprado **${cantidad} ${producto.nombre}${
+          cantidad > 1 ? "s" : ""
+        }** por **${total} ryo**.`
+      );
+    }
+
+    // ---------- SI NO HAY ARGUMENTOS, MOSTRAR TIENDA ----------
     const categorias = {};
     for (const key in productos) {
       const prod = { key, ...productos[key] };
@@ -22,17 +64,18 @@ module.exports = {
       const cat = catKeys[i];
       const items = categorias[cat];
 
-      const embed = new EmbedBuilder()
+      return new EmbedBuilder()
         .setTitle(`📦 Categoría: ${cat}`)
-        .setColor("Blue")
+        .setColor(0xffffff) // Blanco
         .setDescription(
           items
-            .map((item) => `**${item.nombre}** \`(${item.key})\` — ${item.precio} ryo`)
+            .map(
+              (item) =>
+                `**${item.nombre}** \`(${item.key})\` — ${item.precio} ryo`
+            )
             .join("\n")
         )
         .setFooter({ text: `Página ${i + 1} de ${catKeys.length}` });
-
-      return embed;
     };
 
     const row = (i) =>
@@ -55,7 +98,7 @@ module.exports = {
     });
 
     const collector = msg.createMessageComponentCollector({
-      time: 60000, // 1 min
+      time: 60000,
       filter: (i) => i.user.id === message.author.id,
     });
 
@@ -74,3 +117,4 @@ module.exports = {
     });
   },
 };
+
