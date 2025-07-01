@@ -2,7 +2,12 @@ const mongoose = require("mongoose");
 
 const Economia = require("./models/eeconomia.js"); // Si `economia.js` está en raíz
 
+// === CONFIGURACIÓN ===
+const ROL_ADMIN_ID = "123456789012345678"; // Reemplázalo con tu rol real
 
+function esAdminPorRol(rolesDelSolicitante) {
+  return rolesDelSolicitante.includes(ROL_ADMIN_ID);
+}
 
 // Función para asegurar que el usuario existe en DB
 async function asegurarUsuario(userId) {
@@ -31,18 +36,19 @@ async function obtenerDinero(userId) {
 }
 
 // Modificar dinero (suma o resta)
-async function modificarDinero(userId, cantidad) {
+async function modificarDinero(userId, cantidad, rolesDelSolicitante) {
+  if (!esAdminPorRol(rolesDelSolicitante)) throw new Error("Permiso denegado: se requiere rol de administrador.");
   const user = await asegurarUsuario(userId);
   user.dinero += cantidad;
   await user.save();
 }
 
 // Quitar dinero
-async function quitarDinero(userId, cantidad) {
-  await modificarDinero(userId, -cantidad);
+async function quitarDinero(userId, cantidad, rolesDelSolicitante) {
+  await modificarDinero(userId, -cantidad, rolesDelSolicitante);
 }
 
-// Obtener inventario (convertir Map a objeto)
+// Obtener inventario
 async function obtenerInventario(userId) {
   const user = await asegurarUsuario(userId);
   return Object.fromEntries(user.inventario || []);
@@ -57,7 +63,8 @@ async function agregarItem(userId, itemKey) {
 }
 
 // Quitar item del inventario
-async function quitarItem(userId, itemKey) {
+async function quitarItem(userId, itemKey, rolesDelSolicitante) {
+  if (!esAdminPorRol(rolesDelSolicitante)) throw new Error("Permiso denegado: se requiere rol de administrador.");
   const user = await asegurarUsuario(userId);
   const current = user.inventario.get(itemKey) || 0;
   if (current > 0) {
@@ -73,7 +80,8 @@ async function quitarItem(userId, itemKey) {
 }
 
 // Setear dinero directo
-async function setDinero(userId, cantidad) {
+async function setDinero(userId, cantidad, rolesDelSolicitante) {
+  if (!esAdminPorRol(rolesDelSolicitante)) throw new Error("Permiso denegado: se requiere rol de administrador.");
   const user = await asegurarUsuario(userId);
   user.dinero = cantidad;
   await user.save();
@@ -98,4 +106,7 @@ module.exports = {
   quitarDinero,
   obtenerTodos,
   conectarDB,
+  esAdminPorRol, // útil si lo necesitas fuera
 };
+
+
