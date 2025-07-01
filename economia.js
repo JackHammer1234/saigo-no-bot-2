@@ -1,17 +1,15 @@
 const mongoose = require("mongoose");
+const Economia = require("./models/eeconomia.js");
 
-const Economia = require("./models/eeconomia.js"); // Si `economia.js` está en raíz
-
-// === CONFIGURACIÓN: ID del rol administrador ===
+// ID del rol con permiso de administrador
 const ROL_ADMIN_ID = "1389445186836234281";
 
-// Verifica si el usuario tiene el rol de admin
-function esAdminPorRol(rolesDelSolicitante) {
-  if (!Array.isArray(rolesDelSolicitante)) return false;
-  return rolesDelSolicitante.includes(ROL_ADMIN_ID);
+// Verifica si el solicitante tiene el rol admin
+function esAdmin(roles) {
+  return Array.isArray(roles) && roles.includes(ROL_ADMIN_ID);
 }
 
-// Función para asegurar que el usuario existe en DB
+// Función para asegurar que el usuario existe en la base de datos
 async function asegurarUsuario(userId) {
   let user = await Economia.findOne({ userId });
   if (!user) {
@@ -21,7 +19,7 @@ async function asegurarUsuario(userId) {
   return user;
 }
 
-// Obtener todos los usuarios (para leaderboard etc)
+// Obtener todos los usuarios (para leaderboard, etc)
 async function obtenerTodos() {
   const usuarios = await Economia.find({});
   return usuarios.map(u => ({
@@ -31,25 +29,35 @@ async function obtenerTodos() {
   }));
 }
 
-// Obtener dinero
+// Obtener dinero de un usuario
 async function obtenerDinero(userId) {
   const user = await asegurarUsuario(userId);
   return user.dinero;
 }
 
-// Modificar dinero (suma o resta)
+// Modificar dinero (requiere permisos)
 async function modificarDinero(userId, cantidad, rolesDelSolicitante) {
-  if (!esAdminPorRol(rolesDelSolicitante)) {
-    throw new Error("❌ Permiso denegado: se requiere el rol de administrador.");
+  if (!esAdmin(rolesDelSolicitante)) {
+    throw new Error("❌ No tienes permisos para modificar dinero.");
   }
   const user = await asegurarUsuario(userId);
   user.dinero += cantidad;
   await user.save();
 }
 
-// Quitar dinero
+// Quitar dinero (requiere permisos)
 async function quitarDinero(userId, cantidad, rolesDelSolicitante) {
   await modificarDinero(userId, -cantidad, rolesDelSolicitante);
+}
+
+// Setear dinero directamente (requiere permisos)
+async function setDinero(userId, cantidad, rolesDelSolicitante) {
+  if (!esAdmin(rolesDelSolicitante)) {
+    throw new Error("❌ No tienes permisos para setear dinero.");
+  }
+  const user = await asegurarUsuario(userId);
+  user.dinero = cantidad;
+  await user.save();
 }
 
 // Obtener inventario
@@ -58,41 +66,31 @@ async function obtenerInventario(userId) {
   return Object.fromEntries(user.inventario || []);
 }
 
-// Agregar item al inventario
+// Agregar item (no requiere permisos)
 async function agregarItem(userId, itemKey) {
   const user = await asegurarUsuario(userId);
-  const current = user.inventario.get(itemKey) || 0;
-  user.inventario.set(itemKey, current + 1);
+  const actual = user.inventario.get(itemKey) || 0;
+  user.inventario.set(itemKey, actual + 1);
   await user.save();
 }
 
-// Quitar item del inventario
+// Quitar item (requiere permisos)
 async function quitarItem(userId, itemKey, rolesDelSolicitante) {
-  if (!esAdminPorRol(rolesDelSolicitante)) {
-    throw new Error("❌ Permiso denegado: se requiere el rol de administrador.");
+  if (!esAdmin(rolesDelSolicitante)) {
+    throw new Error("❌ No tienes permisos para quitar items.");
   }
   const user = await asegurarUsuario(userId);
-  const current = user.inventario.get(itemKey) || 0;
-  if (current > 0) {
-    if (current === 1) {
+  const actual = user.inventario.get(itemKey) || 0;
+  if (actual > 0) {
+    if (actual === 1) {
       user.inventario.delete(itemKey);
     } else {
-      user.inventario.set(itemKey, current - 1);
+      user.inventario.set(itemKey, actual - 1);
     }
     await user.save();
     return true;
   }
   return false;
-}
-
-// Setear dinero directo
-async function setDinero(userId, cantidad, rolesDelSolicitante) {
-  if (!esAdminPorRol(rolesDelSolicitante)) {
-    throw new Error("❌ Permiso denegado: se requiere el rol de administrador.");
-  }
-  const user = await asegurarUsuario(userId);
-  user.dinero = cantidad;
-  await user.save();
 }
 
 // Conectar a MongoDB
@@ -114,6 +112,4 @@ module.exports = {
   quitarDinero,
   obtenerTodos,
   conectarDB,
-  esAdminPorRol,
 };
-
