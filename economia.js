@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Economia = require("./models/eeconomia.js"); // Si `economia.js` está en raíz
 
 // === CONFIGURACIÓN ===
-const ROL_ADMIN_ID = "1389445186836234281"; // Reemplázalo con tu rol real
+const ROL_ADMIN_ID = "1315480802108244068"; // Reemplázalo con tu rol real
 
 function esAdminPorRol(rolesDelSolicitante) {
   return rolesDelSolicitante.includes(ROL_ADMIN_ID);
