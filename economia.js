@@ -1,15 +1,7 @@
 const mongoose = require("mongoose");
 const Economia = require("./models/eeconomia.js");
 
-// ID del rol con permiso de administrador
-const ROL_ADMIN_ID = "1389445186836234281";
-
-// Verifica si el solicitante tiene el rol admin
-function esAdmin(roles) {
-  return Array.isArray(roles) && roles.includes(ROL_ADMIN_ID);
-}
-
-// Función para asegurar que el usuario existe en la base de datos
+// Asegura que el usuario existe en la base de datos
 async function asegurarUsuario(userId) {
   let user = await Economia.findOne({ userId });
   if (!user) {
@@ -19,7 +11,7 @@ async function asegurarUsuario(userId) {
   return user;
 }
 
-// Obtener todos los usuarios (para leaderboard, etc)
+// Obtener todos los usuarios (para leaderboard, etc.)
 async function obtenerTodos() {
   const usuarios = await Economia.find({});
   return usuarios.map(u => ({
@@ -35,38 +27,32 @@ async function obtenerDinero(userId) {
   return user.dinero;
 }
 
-// Modificar dinero (requiere permisos)
-async function modificarDinero(userId, cantidad, rolesDelSolicitante) {
-  if (!esAdmin(rolesDelSolicitante)) {
-    throw new Error("❌ No tienes permisos para modificar dinero.");
-  }
+// Modificar dinero (puede sumar o restar)
+async function modificarDinero(userId, cantidad) {
   const user = await asegurarUsuario(userId);
   user.dinero += cantidad;
   await user.save();
 }
 
-// Quitar dinero (requiere permisos)
-async function quitarDinero(userId, cantidad, rolesDelSolicitante) {
-  await modificarDinero(userId, -cantidad, rolesDelSolicitante);
+// Quitar dinero (es lo mismo que modificar con negativo)
+async function quitarDinero(userId, cantidad) {
+  await modificarDinero(userId, -cantidad);
 }
 
-// Setear dinero directamente (requiere permisos)
-async function setDinero(userId, cantidad, rolesDelSolicitante) {
-  if (!esAdmin(rolesDelSolicitante)) {
-    throw new Error("❌ No tienes permisos para setear dinero.");
-  }
+// Setear dinero directamente
+async function setDinero(userId, cantidad) {
   const user = await asegurarUsuario(userId);
   user.dinero = cantidad;
   await user.save();
 }
 
-// Obtener inventario
+// Obtener inventario (como objeto plano)
 async function obtenerInventario(userId) {
   const user = await asegurarUsuario(userId);
   return Object.fromEntries(user.inventario || []);
 }
 
-// Agregar item (no requiere permisos)
+// Agregar item al inventario
 async function agregarItem(userId, itemKey) {
   const user = await asegurarUsuario(userId);
   const actual = user.inventario.get(itemKey) || 0;
@@ -74,11 +60,8 @@ async function agregarItem(userId, itemKey) {
   await user.save();
 }
 
-// Quitar item (requiere permisos)
-async function quitarItem(userId, itemKey, rolesDelSolicitante) {
-  if (!esAdmin(rolesDelSolicitante)) {
-    throw new Error("❌ No tienes permisos para quitar items.");
-  }
+// Quitar item del inventario
+async function quitarItem(userId, itemKey) {
   const user = await asegurarUsuario(userId);
   const actual = user.inventario.get(itemKey) || 0;
   if (actual > 0) {
@@ -113,3 +96,4 @@ module.exports = {
   obtenerTodos,
   conectarDB,
 };
+
