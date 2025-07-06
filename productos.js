@@ -56,6 +56,7 @@ const productos = {
   TC: { nombre: "Tanto de césped", precio: 2000, categoria: "Armas" },
   UG: { nombre: "Umpire Guitar", precio: 2000, categoria: "Armas" },
   TP: { nombre: "Tanto perdida", precio: 3000, categoria: "Armas" },
+  PERICO: { nombre: "100 GRAMOS DE PERICO", precio: 200, categoria: "Chisei" },
 
   // Chisei (Libros y equipo especial)
   LB1: { nombre: "Libro básico de chakra", precio: 300, categoria: "Chisei" },
