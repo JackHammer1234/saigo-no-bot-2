@@ -56,7 +56,12 @@ const productos = {
   TC: { nombre: "Tanto de césped", precio: 2000, categoria: "Armas" },
   UG: { nombre: "Umpire Guitar", precio: 2000, categoria: "Armas" },
   TP: { nombre: "Tanto perdida", precio: 3000, categoria: "Armas" },
-  PERICO: { nombre: "100 GRAMOS DE PERICO", precio: 200, categoria: "Chisei" },
+
+  PGC: { nombre: "Pergamino chico de fuinjutsu", precio: 200, categoria: "Otros" },
+  PGM: { nombre: "Pergamino mediano de fuinjutsu", precio: 300, categoria: "Otros" },
+  PGG: { nombre: "Pergamino grande de fuinjutsu", precio: 500, categoria: "Otros" },
+  TYP: { nombre: "tinta y pincel", precio: 100, categoria: "Otros" },
+
 
   // Chisei (Libros y equipo especial)
   LB1: { nombre: "Libro básico de chakra", precio: 300, categoria: "Chisei" },
@@ -100,14 +105,14 @@ const productos = {
   VG1: {
     nombre: "Equipo del Guardián de las Noches",
     precio: 8500,
-    categoria: "Misc",
+    categoria: "Chisei",
   },
   NM1: {
-    nombre: "Nanomáquinas para incremento de fuerza",
+    nombre: "Nanomáquinas",
     precio: 3000,
-    categoria: "Misc",
+    categoria: "Chisei",
   },
-  AB1: { nombre: "Armadura de Bijuu", precio: 14000, categoria: "Misc" },
+  AB1: { nombre: "Armadura de Bijuu", precio: 14000, categoria: "Chisei" },
   EQ: { nombre: "Equipo quirurgico", precio: 800, categoria: "Misc" },
 };
 
