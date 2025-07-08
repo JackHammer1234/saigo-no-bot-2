@@ -68,7 +68,7 @@ const productos = {
   KQ: {
     nombre: "Kit de primeros auxilios/Quirúrgico",
     precio: 500,
-    categoria: "Chisei",
+    categoria: "Otros",
   },
   MT: {
     nombre: "Materiales para marionetas (Shirogane)",
@@ -113,7 +113,6 @@ const productos = {
     categoria: "Chisei",
   },
   AB1: { nombre: "Armadura de Bijuu", precio: 14000, categoria: "Chisei" },
-  EQ: { nombre: "Equipo quirurgico", precio: 800, categoria: "Misc" },
 };
 
 module.exports = productos;
