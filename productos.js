@@ -55,13 +55,17 @@ const productos = {
   SF: { nombre: "Sound flute", precio: 2000, categoria: "Armas" },
   TC: { nombre: "Tanto de césped", precio: 2000, categoria: "Armas" },
   UG: { nombre: "Umpire Guitar", precio: 2000, categoria: "Armas" },
-  TP: { nombre: "Tanto perdida", precio: 3000, categoria: "Armas" },
-
+  TP: { nombre: "Tanto perdida", precio: 2000, categoria: "Armas" },
+  EH: { nombre: "Espadon de la hoja", precio: 3000, categoria: "Armas" },
+  NUI: { nombre: "Nuibari", precio: 3000, categoria: "Armas" },
+  ECO: { nombre: "Espadon Cortaniebla", precio: 4000, categoria: "Armas" },
+  
   PGC: { nombre: "Pergamino chico de fuinjutsu", precio: 200, categoria: "Otros" },
   PGM: { nombre: "Pergamino mediano de fuinjutsu", precio: 300, categoria: "Otros" },
   PGG: { nombre: "Pergamino grande de fuinjutsu", precio: 500, categoria: "Otros" },
   TYP: { nombre: "tinta y pincel", precio: 100, categoria: "Otros" },
-
+  
+  
 
   // Chisei (Libros y equipo especial)
   LB1: { nombre: "Libro básico de chakra", precio: 300, categoria: "Chisei" },
