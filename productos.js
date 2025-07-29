@@ -47,7 +47,7 @@ const productos = {
   KC: { nombre: "Kunai cegador (30)", precio: 50, categoria: "Armas" },
   FS: { nombre: "Fuhma Shuriken", precio: 200, categoria: "Armas" },
   BE: { nombre: "Bastón eléctrico", precio: 400, categoria: "Armas" },
-  GD: { nombre: "Guadañas dobles", precio: 600, categoria: "Armas" },
+  GD: { nombre: "Guadañas dobles", precio: 2000, categoria: "Armas" },
   DR: { nombre: "Destruyerrocas", precio: 1000, categoria: "Armas" },
   KS: { nombre: "Katana Samurái", precio: 1000, categoria: "Armas" },
   KH: { nombre: "Kunai con hilo", precio: 1000, categoria: "Armas" },
@@ -59,6 +59,10 @@ const productos = {
   EH: { nombre: "Espadon de la hoja", precio: 3000, categoria: "Armas" },
   NUI: { nombre: "Nuibari", precio: 3000, categoria: "Armas" },
   ECO: { nombre: "Espadon Cortaniebla", precio: 4000, categoria: "Armas" },
+  ECO: { nombre: "Espadon Cortaniebla", precio: 4000, categoria: "Armas" },
+
+
+
   
   PGC: { nombre: "Pergamino chico de fuinjutsu", precio: 200, categoria: "Otros" },
   PGM: { nombre: "Pergamino mediano de fuinjutsu", precio: 300, categoria: "Otros" },
