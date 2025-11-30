@@ -7,19 +7,21 @@ module.exports = {
     try {
       const n = generarNemesisCompleto();
 
-      let texto = `# Némesis:\n\n`;
+      const nombreCompleto = `${n.nombre} ${n.clan}`;
+
+      let texto = `# NÉMESIS: ${nombreCompleto}\n\n`;
 
       texto += `- ***Rango:***\n`;
-      texto += `    - "${n.rango}"\n`;
+      texto += `    > "${n.rango}"\n`;
 
       texto += `- ***Clan:***\n`;
-      texto += `    - "${n.clan}"\n`;
+      texto += `    > "${n.clan}"\n`;
 
       texto += `- ***Última ubicación registrada:***\n`;
-      texto += `    - "${n.ubicacion}"\n`;
+      texto += `    > "${n.ubicacion}"\n`;
 
-      texto += `- ***Rolsplays restantes para la aparición del Némesis:***\n`;
-      texto += `    - "${n.tiempoRestante}"\n\n`;
+      texto += `- ***Rolplays restantes para la aparición del Némesis:***\n`;
+      texto += `    > "${n.tiempoRestante}"\n\n`;
 
       texto += `# Recompensas:\n\n`;
 
@@ -32,7 +34,7 @@ module.exports = {
 
     } catch (error) {
       console.error(error);
-      message.reply("Error generando al ninjer este tirabrosaurio rex.");
+      message.reply("Error generando al tirabrosaurio rex, brohn.");
     }
   },
 };
