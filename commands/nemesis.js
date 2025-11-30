@@ -1,30 +1,25 @@
-const { generarNemesisCompleto } = require("../nemesisGenerator");
+const { generarNemesis } = require("../nemesisGenerator");
 
 module.exports = {
   name: "nemesis",
-  description: "Genera tu Némesis procedural estilo Warframe",
+  description: "Genera una némesis aleatoria estilo shinobi",
   async execute(message, args) {
     try {
-      const nemesis = generarNemesisCompleto();
+      const n = generarNemesis();
 
-      let texto = `# 🩸 **Némesis: ${nemesis.nombre}**\n\n`;
-      texto += `- **Rango:** ${nemesis.rango}\n`;
-      texto += `- **Clan:** ${nemesis.clan}\n`;
-      texto += `- **Última vez visto en:** ${nemesis.ubicacion}\n`;
-      texto += `- **Roles faltantes para que te ataque:** ${nemesis.tiempo}\n\n`;
+      const txt = `
+**Némesis Generada**
+- Nombre: ${n.nombre}
+- Clan: ${n.clan}
+- Personalidad: ${n.personalidad}
+- Motivo: ${n.motivo}
+- Herencia / Recompensa: **${n.recompensa}**
+      `;
 
-      texto += `# **Recompensas:**\n`;
-
-      for (const recompensa of nemesis.recompensas) {
-        texto += `\n## ${recompensa.nombre}\n`;
-        texto += `> ${recompensa.descripcion}\n`;
-      }
-
-      message.reply(texto);
-
-    } catch (error) {
-      console.error(error);
-      message.reply("❌ Error generando al ninjer este");
+      message.reply(txt);
+    } catch (err) {
+      console.error(err);
+      message.reply("Error generando a tu némesis, bro.");
     }
-  },
+  }
 };
