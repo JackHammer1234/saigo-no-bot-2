@@ -1,27 +1,25 @@
 module.exports = {
   name: "hardcore",
-  description: "Crea un personaje HARDCORE aleatorio",
+  description: "Crea un personaje HARDCORE totalmente aleatorio",
   async execute(message, args) {
     // ----------------------------------------
     // RNG helpers
     // ----------------------------------------
     const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
-    const randInt = (min, max) =>
-      Math.floor(Math.random() * (max - min + 1)) + min;
 
     // ----------------------------------------
-    // Aldeas
+    // Aldeas (todas duplicadas excepto La Espada)
     // ----------------------------------------
     const aldeas = [
-      "Hoja",
-      "Nube",
-      "Roca",
-      "Sonido",
-      "Remolino",
-      "Arena",
-      "Niebla",
-      "País del Hierro",
-      "Lluvia",
+      "Hoja", "Hoja",
+      "Nube", "Nube",
+      "Roca", "Roca",
+      "Sonido", "Sonido",
+      "Remolino", "Remolino",
+      "Arena", "Arena",
+      "Niebla", "Niebla",
+      "País del Hierro", "País del Hierro",
+      "Lluvia", "Lluvia",
       "??? (La Espada)"
     ];
 
@@ -45,19 +43,19 @@ module.exports = {
 
     let clan;
 
+    // Lluvia → usa la pool completa
     if (clanes[aldea] === "ANY") {
-      // Combina absolutamente todos los clanes
       const allClans = Object.values(clanes)
         .filter(x => Array.isArray(x))
         .flat();
-
       clan = rand(allClans);
     }
+    // La Espada → 1% chance de Otsutsuki
     else if (clanes[aldea] === "OTSUTSUKI") {
-      // Chance mínima 1% de Otsutsuki
-      const roll = Math.random() * 100; 
+      const roll = Math.random() * 100;
       clan = roll <= 1 ? "Otsutsuki" : "Desconocido";
     }
+    // Cualquier otra aldea
     else {
       clan = rand(clanes[aldea]);
     }
@@ -66,43 +64,31 @@ module.exports = {
     // Elementos (1 a 3)
     // ----------------------------------------
     const elementosPool = ["Fuego", "Rayo", "Trueno", "Tierra", "Agua"];
-    const numElementos = rand([1, 2, 3]);
+    const cantidadElementos = rand([1, 2, 3]);
 
     let elementos = [];
-    while (elementos.length < numElementos) {
-      const el = rand(elementosPool);
-      if (!elementos.includes(el)) elementos.push(el);
+    while (elementos.length < cantidadElementos) {
+      let e = rand(elementosPool);
+      if (!elementos.includes(e)) elementos.push(e);
     }
 
     // ----------------------------------------
-    // Beneficios
-    // ----------------------------------------
-    const ryo = randInt(500, 3000);
-    const rp = randInt(3, 15);
-    const rango = rand(["Estudiante", "Genin"]);
-    const bonus = rand([1, 2]);
-
-    // ----------------------------------------
-    // Genkai Bonus
+    // Bonus de Kekkei Genkai
     // ----------------------------------------
     let genkaiMsg = "";
-    if (numElementos === 3 && clan === "Desconocido") {
-      genkaiMsg = "\n**Bonus:** Obtienes *dos* Kekkei Genkai elementales.";
+    if (cantidadElementos === 3 && clan === "Desconocido") {
+      genkaiMsg = "\n**Bonus natural:** Puedes usar *dos* Kekkei Genkai elementales.";
     }
 
     // ----------------------------------------
-    // Output
+    // Respuesta
     // ----------------------------------------
     message.reply(
-      `🎲 **PERSONAJE HARDCORE GENERADO** 🎲\n\n` +
+      `🎲 **HARDCORE** 🎲\n\n` +
       `**Aldea:** ${aldea}\n` +
       `**Clan:** ${clan}\n` +
-      `**Elementos:** ${elementos.join(", ")}\n\n` +
-      `**Ryo Inicial:** ${ryo}\n` +
-      `**RP Inicial:** ${rp}\n` +
-      `**Rango Inicial:** ${rango}\n` +
-      `**Bonus en evaluaciones:** +${bonus}\n` +
-      `${genkaiMsg}`
+      `**Elementos:** ${elementos.join(", ")}\n` +
+      genkaiMsg
     );
   },
 };
