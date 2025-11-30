@@ -1,40 +1,51 @@
-const { generarNemesisCompleto } = require("../nemesisGenerator");
+// /src/commands/nemesis.js
+const { generarNemesis } = require("../nemesisGenerator");
 
 module.exports = {
   name: "nemesis",
-  description: "Genera una némesis procedural con recompensas",
-  async execute(message, args) {
+  description: "Genera un némesis procedural",
+
+  async execute(message) {
     try {
-      const n = generarNemesisCompleto();
+      const nm = generarNemesis();
 
-      const nombreCompleto = `${n.nombre} ${n.clan}`;
+      // Top line: Nombre Clan — Título
+      let txt = `# Némesis: ${nm.nombre} ${nm.clan} — ${nm.titulo}\n\n`;
 
-      let texto = `# NÉMESIS: ${nombreCompleto}\n\n`;
+      // Alias (subtítulo)
+      txt += `> Alias: ${nm.alias}\n\n`;
 
-      texto += `- ***Rango:***\n`;
-      texto += `    > "${n.rango}"\n`;
+      txt += `- ***Rango:***\n`;
+      txt += `    > "${nm.rango}"\n`;
+      txt += `- ***Clan:***\n`;
+      txt += `    > "${nm.clan}"\n`;
+      txt += `- ***Última ubicación registrada:***\n`;
+      txt += `    > "${nm.ubicacion}"\n`;
+      txt += `- ***Roleplays restantes para la aparición del Némesis:***\n`;
+      txt += `    > "${nm.roleplays}"\n`;
+      txt += `- ***Motivo:***\n`;
+      txt += `    > "${nm.motivo}"\n\n`;
 
-      texto += `- ***Clan:***\n`;
-      texto += `    > "${n.clan}"\n`;
+      // Quote (ligada al motivo)
+      txt += `> *${nm.quote}*\n\n`;
 
-      texto += `- ***Última ubicación registrada:***\n`;
-      texto += `    > "${n.ubicacion}"\n`;
+      // Mutación corporal
+      txt += `# Mutación corporal:\n\n`;
+      txt += `- ***${nm.mutacion.nombre}***\n`;
+      txt += `    > "${nm.mutacion.efecto}"\n\n`;
 
-      texto += `- ***Rolplays restantes para la aparición del Némesis:***\n`;
-      texto += `    > "${n.tiempoRestante}"\n\n`;
-
-      texto += `# Recompensas:\n\n`;
-
-      for (const r of n.recompensas) {
-        texto += `- ***${r.nombre}***\n`;
-        texto += `    > "${r.descripcion}"\n\n`;
+      // Recompensas (single giant table picks)
+      txt += `# Recompensas:\n\n`;
+      for (const r of nm.recompensas) {
+        txt += `- ***${r.nombre}***\n`;
+        txt += `    > "${r.rareza}"\n\n`;
       }
 
-      message.reply(texto);
+      message.reply(txt);
 
-    } catch (error) {
-      console.error(error);
-      message.reply("Error generando al tirabrosaurio rex, brohn.");
+    } catch (err) {
+      console.error("Error en comando nemesis:", err);
+      message.reply("tirabrosaurio, el némesis explotó 💀");
     }
-  },
+  }
 };
