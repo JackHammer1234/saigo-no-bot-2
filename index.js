@@ -1,89 +1,94 @@
-require("dotenv").config();
+module.exports = {
+  name: "hardcore",
+  description: "Crea un personaje HARDCORE totalmente aleatorio",
+  async execute(message, args) {
+    // ----------------------------------------
+    // RNG helpers
+    // ----------------------------------------
+    const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-const conectarDB = require("./db");
-const Economia = require("./models/eeconomia.js");
+    // ----------------------------------------
+    // Aldeas (todas duplicadas excepto La Espada)
+    // ----------------------------------------
+    const aldeas = [
+      "Hoja", "Hoja",
+      "Nube", "Nube",
+      "Roca", "Roca",
+      "Sonido", "Sonido",
+      "Remolino", "Remolino",
+      "Arena", "Arena",
+      "Niebla", "Niebla",
+      "País del Hierro", "País del Hierro",
+      "Lluvia", "Lluvia",
+      "??? (La Espada)"
+    ];
 
-const express = require("express");
-const app = express();
+    const aldea = rand(aldeas);
 
-const { Client, GatewayIntentBits, Collection, Events } = require("discord.js");
-const fs = require("fs");
-const path = require("path");
+    // ----------------------------------------
+    // Clanes por aldea
+    // ----------------------------------------
+    const clanes = {
+      "Hoja": ["Senju", "Uchiha", "Lee", "Inuzuka", "Aburame", "Hyuga"],
+      "Nube": ["Hatake", "Darui", "Kamizuru", "Namikaze", "Shirogane"],
+      "Roca": ["Himejima", "Haruno", "Akimichi", "Sarutobi", "Jashin"],
+      "Sonido": ["Cobra", "Kurohari", "Jashin", "Kaguya", "Bakuhatsu", "Kyouon"],
+      "Remolino": ["Uzumaki", "Senju", "Kashin", "Tsugikuni", "Kamado", "Tokito"],
+      "Arena": ["Sabaku", "Shirogane", "Kamizuru", "Chinoike", "Yakushi"],
+      "Niebla": ["Hoshigaki", "Chinoike", "Yuki", "Yamanaka", "Hozuki"],
+      "País del Hierro": ["Haruno", "Nara", "Himejima", "Yamanaka", "Yakushi", "Tsugikuni", "Kamado", "Tokito"],
+      "Lluvia": "ANY",
+      "??? (La Espada)": "OTSUTSUKI"
+    };
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildPresences,
-    GatewayIntentBits.GuildMessageReactions,
-  ],
-});
+    let clan;
 
-const prefix = "!";
-client.commands = new Collection();
+    // Lluvia → usa la pool completa
+    if (clanes[aldea] === "ANY") {
+      const allClans = Object.values(clanes)
+        .filter(x => Array.isArray(x))
+        .flat();
+      clan = rand(allClans);
+    }
+    // La Espada → 1% chance de Otsutsuki
+    else if (clanes[aldea] === "OTSUTSUKI") {
+      const roll = Math.random() * 100;
+      clan = roll <= 1 ? "Otsutsuki" : "Desconocido";
+    }
+    // Cualquier otra aldea
+    else {
+      clan = rand(clanes[aldea]);
+    }
 
-// Cargar comandos
-const commandFiles = fs
-  .readdirSync(path.join(__dirname, "commands"))
-  .filter((file) => file.endsWith(".js"));
+    // ----------------------------------------
+    // Elementos (1 a 3)
+    // ----------------------------------------
+    const elementosPool = ["Fuego", "Rayo", "Trueno", "Tierra", "Agua"];
+    const cantidadElementos = rand([1, 2, 3]);
 
-for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
-  if (command.name && typeof command.execute === "function") {
-    client.commands.set(command.name, command);
-  } else {
-    console.warn(`⚠️ El comando en ${file} no tiene "name" o "execute".`);
-  }
-}
+    let elementos = [];
+    while (elementos.length < cantidadElementos) {
+      let e = rand(elementosPool);
+      if (!elementos.includes(e)) elementos.push(e);
+    }
 
-// Servidor Express mínimo para Render
-const PORT = process.env.PORT || 3000;
-app.get("/", (req, res) => {
-  res.send("Bot activo");
-});
-app.listen(PORT, () => {
-  console.log(`Servidor web activo en el puerto ${PORT}`);
-});
+    // ----------------------------------------
+    // Bonus de Kekkei Genkai
+    // ----------------------------------------
+    let genkaiMsg = "";
+    if (cantidadElementos === 3 && clan === "Desconocido") {
+      genkaiMsg = "\n**Bonus natural:** Puedes usar *dos* Kekkei Genkai elementales.";
+    }
 
-// Evento listo
-client.once(Events.ClientReady, () => {
-  console.log(`✅ Bot iniciado como ${client.user.tag}`);
-
-  const canalId = "1225924380664791171";
-  const canal = client.channels.cache.get(canalId);
-
-  if (canal) {
-    canal.send("Commit done");
-  } else {
-    console.log("No encontré el canal para enviar el mensaje.");
-  }
-});
-
-// Evento mensaje
-client.on(Events.MessageCreate, (message) => {
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
-
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
-  const commandName = args.shift().toLowerCase();
-
-  const command = client.commands.get(commandName);
-  if (!command) return;
-
-  try {
-    command.execute(message, args);
-  } catch (error) {
-    console.error(`❌ Error al ejecutar ${commandName}:`, error);
-    message.reply("Hubo un error al ejecutar ese comando.");
-  }
-});
-
-// Función async para conectar DB y luego iniciar bot
-async function iniciar() {
-  await conectarDB(process.env.MONGO_URI);
-  client.login(process.env.TOKEN);
-}
-
-iniciar();
-
+    // ----------------------------------------
+    // Respuesta
+    // ----------------------------------------
+    message.reply(
+      `🎲 **PERSONAJE HARDCORE GENERADO** 🎲\n\n` +
+      `**Aldea:** ${aldea}\n` +
+      `**Clan:** ${clan}\n` +
+      `**Elementos:** ${elementos.join(", ")}\n` +
+      genkaiMsg
+    );
+  },
+};
