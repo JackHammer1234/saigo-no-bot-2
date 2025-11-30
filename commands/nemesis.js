@@ -1,68 +1,21 @@
-const { generarNemesis } = require("../nemesisGenerator");
-
-// Nombre random básico (ajústalo si quieres)
-function randomName() {
-  const nombres = ["Rell", "Akuma", "Takeshi", "Daigo", "Rinzo", "Kaizen", "Arata", "Okami", "Jinrai"];
-  const apellidos = ["Shiro", "Rell", "Yamazaki", "Kurogane", "Hidaruma", "Renge", "Kaisen"];
-  return `${nombres[Math.floor(Math.random() * nombres.length)]} ${apellidos[Math.floor(Math.random() * apellidos.length)]}`;
-}
-
-// Clanes posibles
-function randomClan() {
-  const clanes = ["Uchiha", "Senju", "Hyuga", "Inuzuka", "Aburame", "Nara", "Akimichi", "Yuki", "Kaguya", "Hoshigaki"];
-  return clanes[Math.floor(Math.random() * clanes.length)];
-}
-
-// Ubicaciones posibles
-function randomUbicacion() {
-  const lugares = [
-    "Aldea de la Hoja",
-    "Aldea de la Nube",
-    "Bosque de los Susurros",
-    "Ruinas del País del Hierro",
-    "Valle del Fin",
-    "Aldea de la Lluvia",
-    "Frontera del País del Viento",
-    "Entre tus nalgas (lore canon)",
-  ];
-  return lugares[Math.floor(Math.random() * lugares.length)];
-}
-
-// Rangos posibles
-function randomRango() {
-  const rangos = ["D", "C", "B", "A", "S"];
-  return rangos[Math.floor(Math.random() * rangos.length)];
-}
-
-// Tiempo antes de ataque
-function randomTiempo() {
-  return Math.floor(Math.random() * 5); // 0–4
-}
+const { generarNemesisCompleto } = require("../nemesisGenerator");
 
 module.exports = {
   name: "nemesis",
-  description: "Genera tu Nemesis procedural estilo Warframe",
+  description: "Genera tu Némesis procedural estilo Warframe",
   async execute(message, args) {
     try {
-      // Generar la info base del némesis
-      const nombre = randomName();
-      const clan = randomClan();
-      const ubicacion = randomUbicacion();
-      const rango = randomRango();
-      const tiempo = randomTiempo();
+      const nemesis = generarNemesisCompleto();
 
-      // Generar recompensas según rango
-      const recompensas = generarNemesis(rango);
+      let texto = `# 🩸 **Némesis: ${nemesis.nombre}**\n\n`;
+      texto += `- **Rango:** ${nemesis.rango}\n`;
+      texto += `- **Clan:** ${nemesis.clan}\n`;
+      texto += `- **Última vez visto en:** ${nemesis.ubicacion}\n`;
+      texto += `- **Roles faltantes para que te ataque:** ${nemesis.tiempo}\n\n`;
 
-      // Construir texto estilo tu formato
-      let texto = `# 🩸 **Némesis: ${nombre}**\n\n`;
-      texto += `- **Rango:** ${rango}\n`;
-      texto += `- **Clan:** ${clan}\n`;
-      texto += `- **Última vez visto en:** ${ubicacion}\n`;
-      texto += `- **Roles faltantes para que te ataque:** ${tiempo}\n\n`;
       texto += `# **Recompensas:**\n`;
 
-      for (const recompensa of recompensas) {
+      for (const recompensa of nemesis.recompensas) {
         texto += `\n## ${recompensa.nombre}\n`;
         texto += `> ${recompensa.descripcion}\n`;
       }
