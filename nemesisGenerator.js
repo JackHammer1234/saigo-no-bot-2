@@ -21,8 +21,8 @@ function weightedRandom(pool) {
 // ---------------------------
 // Base pools
 // ---------------------------
-const NOMBRES = ["Rell","Akuma","Takeshi","Daigo","Rinzo","Kaizen","Arata","Okami","Jinrai","Suzuki","Kaito","Mei"];
-const APELLIDOS = ["Shiro","Hoshino","Yamazaki","Kurogane","Hidaruma","Renge","Kaisen"];
+const NOMBRES = ["Saigo"];
+const APELLIDOS = ["no Senshi"];
 
 const CLANES = ["Haruno"];
 
@@ -117,30 +117,13 @@ const QUOTES_BY_MOTIVE = {
 // ---------------------------
 const MUTACIONES = [
   { nombre: "Refuerzo Muscular", rareza:"comun", weight:40, efecto:"Aumento de masa muscular inusual que mejora potencia física."},
-  { nombre: "Piel Endurecida", rareza:"comun", weight:35, efecto:"Piel con dureza anormal que reduce daño físico leve."},
-  { nombre: "Iris Rachado", rareza:"poco_comun", weight:20, efecto:"Pupilas reptilianas que mejoran visión y percepción de chakra."},
-  { nombre: "Garras Quirúrgicas", rareza:"poco_comun", weight:18, efecto:"Uñas que se transforman en cuchillas naturales."},
-  { nombre: "Carne Regenerativa", rareza:"rara", weight:10, efecto:"Regeneración rápida de heridas superficiales."},
-  { nombre: "Columna Segmentada", rareza:"rara", weight:8, efecto:"Capacidad de contorsión y movimientos imposibles."},
-  { nombre: "Esqueleto Vivo", rareza:"epica", weight:3, efecto:"Huesos que actúan como extremidades secundarias."},
-  { nombre: "Corazón Doble", rareza:"epica", weight:2, efecto:"Dos corazones que aumentan resistencia y recuperación."},
-  { nombre: "Carcasa de Chakra", rareza:"legendaria", weight:0.6, efecto:"Armadura de chakra permanente que absorbe golpes."},
-  { nombre: "Genoma Forbidden", rareza:"legendaria", weight:0.2, efecto:"Modificaciones genéticas únicas con efectos impredecibles."}
 ];
 
 const MUTACIONES_POR_CLAN = {
   Haruno: [
     {nombre: "FACTOR OOOOMAZIIIING", rareza: "comun", weight:7, efecto:"Factor que todos los haruno poseen, al tocarte con uno de sus taijutsus moriras desgarrado"}
     ],
-  Uchiha: [
-    { nombre:"Ocular Mutado", rareza:"epica", weight:1.5, efecto:"Un dojutsu degenerado con capacidades de lectura de movimiento."}
-  ],
-  Aburame: [
-    { nombre:"Colmena Interna", rareza:"rara", weight:3, efecto:"Enjambre simbiótico dentro del cuerpo que actúa como arma/órgano."}
-  ],
-  Kaguya: [
-    { nombre:"Hueso Serrado", rareza:"epica", weight:1.8, efecto:"Huesos que emergen con filo, causan daño cortante."}
-  ]
+
 };
 
 // ---------------------------
