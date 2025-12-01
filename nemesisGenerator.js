@@ -24,7 +24,7 @@ function weightedRandom(pool) {
 const NOMBRES = ["Rell","Akuma","Takeshi","Daigo","Rinzo","Kaizen","Arata","Okami","Jinrai","Suzuki","Kaito","Mei"];
 const APELLIDOS = ["Shiro","Hoshino","Yamazaki","Kurogane","Hidaruma","Renge","Kaisen"];
 
-const CLANES = ["Uchiha","Senju","Hyuga","Aburame","Nara","Akimichi","Yuki","Kaguya","Hoshigaki","Inuzuka","Haruno"];
+const CLANES = ["Haruno"];
 
 const UBICACIONES = [
   "Aldea de la Hoja",
