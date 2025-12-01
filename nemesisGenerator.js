@@ -24,7 +24,7 @@ function weightedRandom(pool) {
 const NOMBRES = ["Rell","Akuma","Takeshi","Daigo","Rinzo","Kaizen","Arata","Okami","Jinrai","Suzuki","Kaito","Mei"];
 const APELLIDOS = ["Shiro","Hoshino","Yamazaki","Kurogane","Hidaruma","Renge","Kaisen"];
 
-const CLANES = ["Haruno", "Uchiha"];
+const CLANES = ["Haruno"];
 
 const UBICACIONES = [
   "Aldea de la Hoja",
@@ -131,7 +131,7 @@ const MUTACIONES = [
 const MUTACIONES_POR_CLAN = {
   Haruno: [
     {nombre: "FACTOR OOOOMAZIIIING", rareza: "comun", weight:7, efecto:"Factor que todos los haruno poseen, al tocarte con uno de sus taijutsus moriras desgarrado"}
-    ]
+    ],
   Uchiha: [
     { nombre:"Ocular Mutado", rareza:"epica", weight:1.5, efecto:"Un dojutsu degenerado con capacidades de lectura de movimiento."}
   ],
