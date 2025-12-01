@@ -22,9 +22,9 @@ function weightedRandom(pool) {
 // Base pools (editable)
 // ---------------------------
 const NOMBRES = ["Rell","Akuma","Takeshi","Daigo","Rinzo","Kaizen","Arata","Okami","Jinrai","Suzuki","Kaito","Mei"];
-const APELLIDOS = ["Shiro","Hoshino","Yamazaki","Kurogane","Hidaruma","Renge","Kaisen","Uchiha","Senju","Hyuga"];
+const APELLIDOS = ["Shiro","Hoshino","Yamazaki","Kurogane","Hidaruma","Renge","Kaisen"];
 
-const CLANES = ["Uchiha","Senju","Hyuga","Aburame","Nara","Akimichi","Yuki","Kaguya","Hoshigaki","Inuzuka"];
+const CLANES = ["Uchiha","Senju","Hyuga","Aburame","Nara","Akimichi","Yuki","Kaguya","Hoshigaki","Inuzuka", "Haruno"];
 
 const UBICACIONES = [
   "Aldea de la Hoja",
@@ -64,6 +64,14 @@ const ALIASES_BY_CLAN_RANK = {
     C: ["Portador del Enjambre"],
     D: ["Niño Insecto"]
   },
+  Haruno: {
+    S: ["MISTEEER OOOMAZING"],
+    A: ["MR OOOMAZING"],
+    B: ["MR OMAZING"],
+    C: ["señor omazing"],
+    D: ["omazing"]
+  },
+  
   // fallback
   DEFAULT: {
     S: ["El Devorador de Aldeas","El Renacido"],
@@ -72,6 +80,7 @@ const ALIASES_BY_CLAN_RANK = {
     C: ["El Sombrío"],
     D: ["El Recluta Errante"]
   }
+  
 };
 
 const TITULOS_BY_RANK = {
