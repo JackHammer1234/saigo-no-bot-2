@@ -9,9 +9,7 @@ module.exports = {
     try {
       const nm = generarNemesis();
 
-      // Top line: Nombre Clan — Título
       let txt = `# Némesis: ${nm.nombre} ${nm.clan} — ${nm.alias}\n\n`;
-
 
       txt += `- ***Rango:***\n`;
       txt += `    > "${nm.rango}"\n`;
@@ -24,15 +22,12 @@ module.exports = {
       txt += `- ***Motivo:***\n`;
       txt += `    > "${nm.motivo}"\n\n`;
 
-      // Quote (ligada al motivo)
       txt += `> *${nm.quote}*\n\n`;
 
-      // Mutación corporal
       txt += `# Mutación corporal:\n\n`;
       txt += `- ***${nm.mutacion.nombre}***\n`;
       txt += `    > "${nm.mutacion.efecto}"\n\n`;
 
-      // Recompensas (single giant table picks)
       txt += `# Recompensas:\n\n`;
       for (const r of nm.recompensas) {
         txt += `- ***${r.nombre}***\n`;
