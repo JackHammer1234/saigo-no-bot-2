@@ -19,12 +19,12 @@ function weightedRandom(pool) {
 }
 
 // ---------------------------
-// Base pools (editable)
+// Base pools
 // ---------------------------
 const NOMBRES = ["Rell","Akuma","Takeshi","Daigo","Rinzo","Kaizen","Arata","Okami","Jinrai","Suzuki","Kaito","Mei"];
 const APELLIDOS = ["Shiro","Hoshino","Yamazaki","Kurogane","Hidaruma","Renge","Kaisen"];
 
-const CLANES = ["Uchiha","Senju","Hyuga","Aburame","Nara","Akimichi","Yuki","Kaguya","Hoshigaki","Inuzuka", "Haruno"];
+const CLANES = ["Uchiha","Senju","Hyuga","Aburame","Nara","Akimichi","Yuki","Kaguya","Hoshigaki","Inuzuka","Haruno"];
 
 const UBICACIONES = [
   "Aldea de la Hoja",
@@ -47,7 +47,7 @@ const MOTIVOS = [
 ];
 
 // ---------------------------
-// Alias / Títulos lockeados por clan + rango
+// Alias / Títulos (ESTOS SON EL “TÍTULO FINAL”)
 // ---------------------------
 const ALIASES_BY_CLAN_RANK = {
   Uchiha: {
@@ -71,8 +71,7 @@ const ALIASES_BY_CLAN_RANK = {
     C: ["señor omazing"],
     D: ["omazing"]
   },
-  
-  // fallback
+
   DEFAULT: {
     S: ["El Devorador de Aldeas","El Renacido"],
     A: ["El Acechador Nocturno"],
@@ -80,19 +79,10 @@ const ALIASES_BY_CLAN_RANK = {
     C: ["El Sombrío"],
     D: ["El Recluta Errante"]
   }
-  
-};
-
-const TITULOS_BY_RANK = {
-  S: ["Portador del Rencor","El que Nunca Muere"],
-  A: ["Caminante del Silencio","Destructor del Karma"],
-  B: ["Sombra Errante","Reputación de Acero"],
-  C: ["Eco de Guerra","El Vigilante"],
-  D: ["Aprendiz Oscuro","Huellas Menores"]
 };
 
 // ---------------------------
-// Quotes lockeadas por motivo
+// Quotes por motivo
 // ---------------------------
 const QUOTES_BY_MOTIVE = {
   "Venganza personal": [
@@ -122,20 +112,19 @@ const QUOTES_BY_MOTIVE = {
 };
 
 // ---------------------------
-// Mutaciones corporales (pool general) + mutaciones por clan
+// Mutaciones
 // ---------------------------
-// rareza keys: comun, poco_comun, rara, epica, legendaria
 const MUTACIONES = [
-  { nombre: "Refuerzo Muscular", rareza:"comun", weight: 40, efecto:"Aumento de masa muscular inusual que mejora potencia física."},
-  { nombre: "Piel Endurecida", rareza:"comun", weight: 35, efecto:"Piel con dureza anormal que reduce daño físico leve."},
-  { nombre: "Iris Rachado", rareza:"poco_comun", weight: 20, efecto:"Pupilas reptilianas que mejoran visión y percepción de chakra."},
-  { nombre: "Garras Quirúrgicas", rareza:"poco_comun", weight: 18, efecto:"Uñas que se transforman en cuchillas naturales."},
-  { nombre: "Carne Regenerativa", rareza:"rara", weight: 10, efecto:"Regeneración rápida de heridas superficiales."},
-  { nombre: "Columna Segmentada", rareza:"rara", weight: 8, efecto:"Capacidad de contorsión y movimientos imposibles."},
-  { nombre: "Esqueleto Vivo", rareza:"epica", weight: 3, efecto:"Huesos que actúan como extremidades secundarias."},
-  { nombre: "Corazón Doble", rareza:"epica", weight: 2, efecto:"Dos corazones que aumentan resistencia y recuperación."},
-  { nombre: "Carcasa de Chakra", rareza:"legendaria", weight: 0.6, efecto:"Armadura de chakra permanente que absorbe golpes."},
-  { nombre: "Genoma Forbidden", rareza:"legendaria", weight: 0.2, efecto:"Modificaciones genéticas únicas con efectos impredecibles."}
+  { nombre: "Refuerzo Muscular", rareza:"comun", weight:40, efecto:"Aumento de masa muscular inusual que mejora potencia física."},
+  { nombre: "Piel Endurecida", rareza:"comun", weight:35, efecto:"Piel con dureza anormal que reduce daño físico leve."},
+  { nombre: "Iris Rachado", rareza:"poco_comun", weight:20, efecto:"Pupilas reptilianas que mejoran visión y percepción de chakra."},
+  { nombre: "Garras Quirúrgicas", rareza:"poco_comun", weight:18, efecto:"Uñas que se transforman en cuchillas naturales."},
+  { nombre: "Carne Regenerativa", rareza:"rara", weight:10, efecto:"Regeneración rápida de heridas superficiales."},
+  { nombre: "Columna Segmentada", rareza:"rara", weight:8, efecto:"Capacidad de contorsión y movimientos imposibles."},
+  { nombre: "Esqueleto Vivo", rareza:"epica", weight:3, efecto:"Huesos que actúan como extremidades secundarias."},
+  { nombre: "Corazón Doble", rareza:"epica", weight:2, efecto:"Dos corazones que aumentan resistencia y recuperación."},
+  { nombre: "Carcasa de Chakra", rareza:"legendaria", weight:0.6, efecto:"Armadura de chakra permanente que absorbe golpes."},
+  { nombre: "Genoma Forbidden", rareza:"legendaria", weight:0.2, efecto:"Modificaciones genéticas únicas con efectos impredecibles."}
 ];
 
 const MUTACIONES_POR_CLAN = {
@@ -151,45 +140,32 @@ const MUTACIONES_POR_CLAN = {
 };
 
 // ---------------------------
-// Reward pool (una sola tabla gigante, con rarezas y pesos base)
+// Recompensas
 // ---------------------------
-// rareza keys: comun, poco_comun, rara, epica, legendaria
 const REWARD_POOL = [
-  // comunes
   { nombre:"Fragmento Antiguo", rareza:"comun", weight:40 },
   { nombre:"Muestra de Chakra", rareza:"comun", weight:35 },
   { nombre:"Células Básicas", rareza:"comun", weight:30 },
 
-  // poco comunes
   { nombre:"Amuleto de Hueso", rareza:"poco_comun", weight:20 },
   { nombre:"Daga Ancestral", rareza:"poco_comun", weight:18 },
   { nombre:"ADN Adaptativo", rareza:"poco_comun", weight:15 },
 
-  // raras
   { nombre:"Pergamino Perdido", rareza:"rara", weight:10 },
   { nombre:"Genosoma Refinado", rareza:"rara", weight:8 },
   { nombre:"Sellado Tormentoso", rareza:"rara", weight:7 },
 
-  // épicas
   { nombre:"Liberación Carmesí", rareza:"epica", weight:3 },
   { nombre:"Pacto de Sanguijuela", rareza:"epica", weight:2 },
   { nombre:"Susano'o Parasitario", rareza:"epica", weight:1.5 },
 
-  // legendarias
   { nombre:"Kami Fūjin", rareza:"legendaria", weight:0.6 },
   { nombre:"Máscara del Demonio Blanco", rareza:"legendaria", weight:0.35 },
   { nombre:"Colmillo del Primer Shinobi", rareza:"legendaria", weight:0.25 }
 ];
 
-// ---------------------------
-// Drops por rango (cuántos picks hace de la tabla unica)
-// ---------------------------
 const DROPS_BY_RANK = { D:1, C:1, B:2, A:3, S:4 };
 
-// ---------------------------
-// Rareza modifiers por rango (modifican weight base por rareza)
-// ---------------------------
-// key names match REWARD_POOL rareza values
 const RAREZA_MODIFIERS = {
   D: { comun:1.2, poco_comun:1.0, rara:0.8, epica:0.4, legendaria:0.2 },
   C: { comun:1.0, poco_comun:1.0, rara:1.0, epica:0.8, legendaria:0.4 },
@@ -198,9 +174,6 @@ const RAREZA_MODIFIERS = {
   S: { comun:0.2, poco_comun:0.6, rara:1.5, epica:2.0, legendaria:1.5 }
 };
 
-// ---------------------------
-// Mutación modifiers por rango
-// ---------------------------
 const MUTACION_MODIFIERS = {
   D: { comun:1.2, poco_comun:1.0, rara:0.6, epica:0.3, legendaria:0.1 },
   C: { comun:1.0, poco_comun:1.0, rara:0.8, epica:0.5, legendaria:0.2 },
@@ -210,32 +183,22 @@ const MUTACION_MODIFIERS = {
 };
 
 // ---------------------------
-// Generadores auxiliares
+// Pickers
 // ---------------------------
 function pickAliasFor(clan, rank) {
   const byClan = ALIASES_BY_CLAN_RANK[clan];
   if (byClan && byClan[rank] && byClan[rank].length) return random(byClan[rank]);
-  // fallback default for rank
-  return random(ALIASES_BY_CLAN_RANK.DEFAULT[rank] || ALIASES_BY_CLAN_RANK.DEFAULT.S);
+  return random(ALIASES_BY_CLAN_RANK.DEFAULT[rank]);
 }
 
-function pickTitleFor(rank) {
-  return random(TITULOS_BY_RANK[rank] || TITULOS_BY_RANK.S);
-}
-
-// ---------------------------
-// Generar mutación (pool general + pool clan)
-// ---------------------------
 function generateMutation(rango, clan) {
   const mod = MUTACION_MODIFIERS[rango] || MUTACION_MODIFIERS.C;
 
-  // pool ajustado
   const pool = MUTACIONES.map(m => ({
     ...m,
     weight: m.weight * (mod[m.rareza] ?? 1)
   }));
 
-  // añadir mutaciones de clan si hay
   if (MUTACIONES_POR_CLAN[clan]) {
     MUTACIONES_POR_CLAN[clan].forEach(m => {
       pool.push({
@@ -245,42 +208,38 @@ function generateMutation(rango, clan) {
     });
   }
 
-  return weightedRandom(pool); // retorna objeto mutación completo
+  return weightedRandom(pool);
 }
 
-// ---------------------------
-// Generar recompensas (multi-drop desde una sola tabla gigante)
-// ---------------------------
 function generateRewards(rango) {
   const drops = DROPS_BY_RANK[rango] || 1;
   const mod = RAREZA_MODIFIERS[rango] || RAREZA_MODIFIERS.C;
 
-  const adjustedPool = REWARD_POOL.map(r => ({
+  const pool = REWARD_POOL.map(r => ({
     ...r,
     weight: r.weight * (mod[r.rareza] ?? 1)
   }));
 
-  const picked = [];
+  const out = [];
   for (let i = 0; i < drops; i++) {
-    const pick = weightedRandom(adjustedPool);
-    picked.push({ nombre: pick.nombre, rareza: pick.rareza });
+    const p = weightedRandom(pool);
+    out.push({ nombre: p.nombre, rareza: p.rareza });
   }
-  return picked;
+  return out;
 }
 
 // ---------------------------
-// Generador completo de némesis
+// Generador principal
 // ---------------------------
 function generarNemesis() {
   const nombre = `${random(NOMBRES)} ${random(APELLIDOS)}`;
   const clan = random(CLANES);
-  const rango = random(Object.keys(RAREZA_MODIFIERS)); // D,C,B,A,S
+  const rango = random(Object.keys(RAREZA_MODIFIERS));
   const ubicacion = random(UBICACIONES);
   const roleplays = Math.floor(Math.random() * 4) + 1; // 1-4
   const motivo = random(MOTIVOS);
 
   const alias = pickAliasFor(clan, rango);
-  const titulo = pickTitleFor(rango);
   const quote = random(QUOTES_BY_MOTIVE[motivo] || ["..."]);
 
   const mutacion = generateMutation(rango, clan);
@@ -293,8 +252,7 @@ function generarNemesis() {
     ubicacion,
     roleplays,
     motivo,
-    alias,
-    titulo,
+    alias, // título final
     quote,
     mutacion,
     recompensas
