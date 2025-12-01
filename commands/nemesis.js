@@ -10,10 +10,8 @@ module.exports = {
       const nm = generarNemesis();
 
       // Top line: Nombre Clan — Título
-      let txt = `# Némesis: ${nm.nombre} ${nm.clan} — ${nm.titulo}\n\n`;
+      let txt = `# Némesis: ${nm.nombre} ${nm.clan} — ${nm.alias}\n\n`;
 
-      // Alias (subtítulo)
-      txt += `> Alias: ${nm.alias}\n\n`;
 
       txt += `- ***Rango:***\n`;
       txt += `    > "${nm.rango}"\n`;
