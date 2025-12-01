@@ -119,16 +119,59 @@ const MUTACIONES = [
   { nombre: "Refuerzo Muscular", rareza:"comun", weight:40, efecto:"Aumento de masa muscular inusual que mejora potencia física."},
 ];
 
-const MUTACIONES_POR_CLAN = {
-  Haruno: [
-    {nombre: "FACTOR OOOOMAZIIIING", rareza: "comun", weight:7, efecto:"Factor que todos los haruno poseen, al tocarte con uno de sus taijutsus moriras desgarrado"}
+const MUTACIONES_POR_CLAN_Y_RANGO = {
+  Haruno: {
+    S: [
+      { nombre: "FACTOR OOOOMAZIIIING", rareza: "comun", weight: 10, efecto:"Factor que todos los haruno poseen", titulo: "del Factor OOOOMAZIIIING"}
     ],
-
+    A: [
+      { nombre: "Puño Divino", rareza:"poco_comun", weight: 5, efecto:"EL HOMBRE MAS FUERTE DEL MUNDO", titulo:"del Puño Divino"}
+    ]
+  }
+  // Agregar más combinaciones de clan + rango
 };
+
 
 // ---------------------------
 // Recompensas
 // ---------------------------
+
+const RANK_EXCLUSIVE_REWARDS = {
+  S: [
+    { nombre: "Corazón del Dios Primigenio", rareza: "legendaria", weight: 1 },
+    { nombre: "Aliento de las Sombras Eternas", rareza: "legendaria", weight: 0.6 }
+  ],
+  A: [
+    { nombre: "Pergamino de Jutsu Supremo", rareza: "epica", weight: 2 },
+    { nombre: "Ídolo Carmesí", rareza: "epica", weight: 1.5 }
+  ],
+  B: [
+    { nombre: "Tomo del Guerrero Silente", rareza: "rara", weight: 3 }
+  ],
+  C: [
+    { nombre: "Diente Bendito", rareza: "poco_comun", weight: 4 }
+  ],
+  D: [
+    { nombre: "Pedazo de Metal Oxidado", rareza: "comun", weight: 10 }
+  ]
+};
+
+const CLAN_EXCLUSIVE_REWARDS = {
+  Uchiha: [
+    { nombre: "Sharingan del Fénix", rareza: "legendaria", weight: 1 },
+    { nombre: "Capa de Llamas Escarlata", rareza: "epica", weight: 2 }
+  ],
+  Aburame: [
+    { nombre: "Enjambre Encarnado", rareza: "epica", weight: 2 },
+    { nombre: "Nido de Sombras", rareza: "rara", weight: 4 }
+  ],
+  Haruno: [
+    { nombre: "Puño del Dios Taijutsu", rareza: "epica", weight: 3 },
+    { nombre: "Corazón de Haruno", rareza: "rara", weight: 5 }
+  ]
+};
+
+
 const REWARD_POOL = [
   { nombre:"Fragmento Antiguo", rareza:"comun", weight:40 },
   { nombre:"Muestra de Chakra", rareza:"comun", weight:35 },
@@ -181,39 +224,70 @@ function pickAliasFor(clan, rank) {
 function generateMutation(rango, clan) {
   const mod = MUTACION_MODIFIERS[rango] || MUTACION_MODIFIERS.C;
 
-  const pool = MUTACIONES.map(m => ({
+  let pool = MUTACIONES.map(m => ({
     ...m,
     weight: m.weight * (mod[m.rareza] ?? 1)
   }));
 
+  // Mutaciones por clan
   if (MUTACIONES_POR_CLAN[clan]) {
     MUTACIONES_POR_CLAN[clan].forEach(m => {
-      pool.push({
-        ...m,
-        weight: m.weight * (mod[m.rareza] ?? 1)
-      });
+      pool.push({ ...m, weight: m.weight * (mod[m.rareza] ?? 1) });
+    });
+  }
+
+  // Mutaciones por clan + rango
+  if (MUTACIONES_POR_CLAN_Y_RANGO[clan] && MUTACIONES_POR_CLAN_Y_RANGO[clan][rango]) {
+    MUTACIONES_POR_CLAN_Y_RANGO[clan][rango].forEach(m => {
+      pool.push({ ...m, weight: m.weight * (mod[m.rareza] ?? 1) });
     });
   }
 
   return weightedRandom(pool);
 }
 
-function generateRewards(rango) {
+
+function generateRewards(rango, clan) {
   const drops = DROPS_BY_RANK[rango] || 1;
   const mod = RAREZA_MODIFIERS[rango] || RAREZA_MODIFIERS.C;
 
+  // Pool base
   const pool = REWARD_POOL.map(r => ({
     ...r,
     weight: r.weight * (mod[r.rareza] ?? 1)
   }));
 
+  // Recompensas exclusivas por rango
+  if (RANK_EXCLUSIVE_REWARDS[rango]) {
+    RANK_EXCLUSIVE_REWARDS[rango].forEach(r => {
+      pool.push({
+        ...r,
+        weight: r.weight * (mod[r.rareza] ?? 1)
+      });
+    });
+  }
+
+  // Recompensas exclusivas por clan
+  if (CLAN_EXCLUSIVE_REWARDS[clan]) {
+    CLAN_EXCLUSIVE_REWARDS[clan].forEach(r => {
+      pool.push({
+        ...r,
+        weight: r.weight * (mod[r.rareza] ?? 1)
+      });
+    });
+  }
+
+  // Picks
   const out = [];
   for (let i = 0; i < drops; i++) {
     const p = weightedRandom(pool);
     out.push({ nombre: p.nombre, rareza: p.rareza });
   }
+
   return out;
 }
+
+
 
 // ---------------------------
 // Generador principal
@@ -226,11 +300,14 @@ function generarNemesis() {
   const roleplays = Math.floor(Math.random() * 4) + 1; // 1-4
   const motivo = random(MOTIVOS);
 
-  const alias = pickAliasFor(clan, rango);
-  const quote = random(QUOTES_BY_MOTIVE[motivo] || ["..."]);
-
   const mutacion = generateMutation(rango, clan);
-  const recompensas = generateRewards(rango);
+  const aliasBase = pickAliasFor(clan, rango);
+
+  // Si la mutación tiene un título, lo añadimos al alias
+  const aliasFinal = mutacion.titulo ? `${aliasBase} ${mutacion.titulo}` : aliasBase;
+
+  const quote = random(QUOTES_BY_MOTIVE[motivo] || ["..."]);
+  const recompensas = generateRewards(rango, clan);
 
   return {
     nombre,
@@ -239,11 +316,12 @@ function generarNemesis() {
     ubicacion,
     roleplays,
     motivo,
-    alias, // título final
+    alias: aliasFinal, // título final con mutación
     quote,
     mutacion,
     recompensas
   };
 }
+
 
 module.exports = { generarNemesis };
