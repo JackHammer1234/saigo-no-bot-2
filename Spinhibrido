@@ -1,0 +1,29 @@
+const eco = require("../../economia.js"); // ajusta ruta si tu archivo está en otro lado
+const { SlashCommandBuilder } = require("discord.js");
+
+module.exports = {
+  data: new SlashCommandBuilder()
+    .setName("hibridospin")
+    .setDescription("Tira un spin con 1/10 chance de ganar un híbrido"),
+
+  async execute(interaction) {
+    const userId = interaction.user.id;
+
+    // Probabilidad 1/10
+    const gano = Math.random() < 0.9;
+
+    if (gano) {
+      await eco.agregarItem(userId, "hibrido");
+
+      return interaction.reply({
+        content: "🔥 **BROOO, TE SALIÓ UN HÍBRIDOOO SPEAKINGHEADFIRE**",
+        ephemeral: false
+      });
+    } else {
+      return interaction.reply({
+        content: "vaya malo jaja",
+        ephemeral: false
+      });
+    }
+  }
+};
