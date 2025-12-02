@@ -1,14 +1,15 @@
 module.exports = {
   name: "spinhibrido",
-  alias: ["spinhib", "spinhib"],
-  run: async (client, message, args) => {
+  description: "1/10 de volverte híbrido",
+  async execute(message, args) {
 
-    const win = Math.random() < 0.8; // 10%
+    // 10% de probabilidad
+    const win = Math.random() < 0.8;
 
     if (win) {
-      return message.reply("🔥 **GANASTE (1/10)** — te cayó el híbrido 🔥");
+      return message.reply("🔥 HÍBRIDO 🔥");
     } else {
-      return message.reply("😐 No cayó el híbrido, sigue girando bro...");
+      return message.reply("😐 No cayó bro… inténtalo otra vez.");
     }
   }
 };
