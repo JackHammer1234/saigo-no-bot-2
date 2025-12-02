@@ -4,7 +4,7 @@ module.exports = {
   async execute(message, args) {
 
     // 10% de probabilidad
-    const win = Math.random() < 0.8;
+    const win = Math.random() < 0.1;
 
     if (win) {
       return message.reply("🔥 HÍBRIDO 🔥");
