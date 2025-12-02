@@ -1,13 +1,14 @@
-client.on("messageCreate", async (message) => {
-  if (message.author.bot) return;
+module.exports = {
+  name: "spinhibrido",
+  alias: ["spinhib", "spinhib"],
+  run: async (client, message, args) => {
 
-  if (message.content.toLowerCase() === "!spinhibrido") {
     const win = Math.random() < 0.8; // 10%
 
     if (win) {
-      message.reply("hibrido :speakinghead: ");
+      return message.reply("🔥 **GANASTE (1/10)** — te cayó el híbrido 🔥");
     } else {
-      message.reply("No jaja vya maluco no...");
+      return message.reply("😐 No cayó el híbrido, sigue girando bro...");
     }
   }
-});
+};
