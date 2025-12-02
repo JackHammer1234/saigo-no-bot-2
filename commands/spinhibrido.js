@@ -1,17 +1,13 @@
-const { SlashCommandBuilder } = require("discord.js");
+client.on("messageCreate", async (message) => {
+  if (message.author.bot) return;
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("hibridospin")
-    .setDescription("Spin de híbrido con 1/10 de probabilidad"),
+  if (message.content.toLowerCase() === "!spinhibrido") {
+    const win = Math.random() < 0.8; // 10%
 
-  async execute(interaction) {
-    const gano = Math.random() < 0.8;
-
-    if (gano) {
-      return interaction.reply("**BROO, TE HAS GANADO UN HÍBRIDO** 🔥");
+    if (win) {
+      message.reply("hibrido :speakinghead: ");
     } else {
-      return interaction.reply("💀 Nojaja.");
+      message.reply("No jaja vya maluco no...");
     }
   }
-};
+});
