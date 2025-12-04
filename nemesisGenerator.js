@@ -24,18 +24,24 @@ function weightedRandom(pool) {
 const NOMBRES = ["Saigo"];
 const APELLIDOS = ["no Senshi"];
 
-const CLANES = ["Haruno"];
+const CLANES = ["Tsugikuni"];
 
 const UBICACIONES = [
-  "Aldea de la Hoja",
-  "Aldea de la Nube",
+  "Pais del fuego",
+  "Pais del agua",
+  "Pais del viento",
+  "Pais de la roca",
+  "Pais del rayo",
+  "Pais de la lluvia",
+  "Pais del hierro",
+  "Afueras del pais del fuego (monte myoboku)",
+  "Afueras del pais del viento (cueva ryuji)",
+  "Afueras del pais del hierro (dunas gorogoro)",
+  "Afueras del pais del agua (bosque shikai)",
   "Bosque de la muerte",
-  "Ruinas de la aldea del remolino",
-  "Valle del Fin",
-  "Aldea de la Lluvia",
-  "Frontera del País del Viento",
-  "Territorio Desconocido",
-  "Dunas GoroGoro",
+  "Montañas nevadas del pais del rayo",
+  "Mercado rojo del hierro",
+  "Mercado Negro de la lluvia",
 ];
 
 const MOTIVOS = [
@@ -51,10 +57,29 @@ const MOTIVOS = [
 // Alias / Títulos
 // ---------------------------
 const ALIASES_BY_CLAN_RANK = {
-  Uchiha: { S:["El Susurro del Mangekyō","El Incinerador Carmesí"], A:["El Portador de Llamas","Ojo Guardián"], B:["El Vigía Escarlata"], C:["El Ojo Despierto"], D:["La Chispa"] },
-  Aburame: { S:["El Nido Viviente","El Pastor de Enjambres"], A:["Colmenal Nocturno"], B:["Zumbido Silente"], C:["Portador del Enjambre"], D:["Niño Insecto"] },
-  Haruno: { S:["MISTEEER OOOMAZING"], A:["MR OOOMAZING"], B:["MR OMAZING"], C:["señor omazing"], D:["omazing"] },
-  DEFAULT: { S:["El Devorador de Aldeas","El Renacido"], A:["El Acechador Nocturno"], B:["El Rastreador"], C:["El Sombrío"], D:["El Recluta Errante"] }
+  DEFAULT: {
+    S: ["El Desconocido Supremo"],
+    A: ["El Guerrero Anónimo"],
+    B: ["El Competente Sin Nombre"],
+    C: ["El Don Nadie"],
+    D: ["El Random"],
+  },
+
+  Haruno: { 
+    S:["MISTEEER OOOMAZING"], 
+    A:["MR OOOMAZING"], 
+    B:["MR OMAZING"], 
+    C:["señor omazing"], 
+    D:["omazing"] 
+  },
+
+  Tsugikuni: { 
+    S:["La unica espada por encima del sol", "El unico invencible bajo los cielos", "El espadachin capaz de cortar almas"], 
+    A:[""], 
+    B:[""], 
+    C:[""], 
+    D:[""] 
+  },
 };
 
 // ---------------------------
@@ -65,7 +90,7 @@ const QUOTES_BY_MOTIVE = {
   "Odio al clan":["Tu linaje se apaga conmigo.","Los apellidos no salvan vidas."],
   "Conflicto por territorio":["Estás en tierra equivocada.","Todo lo que pisas, ahora arde."],
   "Traición pasada":["Jamás olvidaré lo que hiciste.","Prometiste. Fallaste. Pagarás."],
-  "Deuda de sangre":["Una vida por otra: la ecuación final.","Sangre reclama sangre."],
+  "Deuda de sangre generacional":["Una vida por otra: la ecuación final.","Sangre reclama sangre."],
   "Juramento roto":["Las promesas tienen precio.","Tus palabras no me detendrán."]
 };
 
@@ -86,20 +111,39 @@ const MUTACIONES_POR_CLAN_Y_RANGO = {
     B:[],
     C:[],
     D:[]
+  },
+  Tsugikuni: {
+    S:[{ nombre:"FACTOR OOOOMAZIIIING", rareza:"comun", weight:10, efecto:"Factor que todos los Haruno poseen", titulo:"del Factor OOOOMAZIIIING" }],
+    A:[{ nombre:"Puño Divino", rareza:"poco_comun", weight:5, efecto:"EL HOMBRE MÁS FUERTE DEL MUNDO", titulo:"del Puño Divino" }],
+    B:[],
+    C:[],
+    D:[]
   }
 };
 
 // ---------------------------
-// Recompensas
+// Recompensas por rango
 // ---------------------------
-const REWARD_POOL = [
-  { nombre:"Fragmento Antiguo", rareza:"comun", weight:40 },
-  { nombre:"Muestra de Chakra", rareza:"comun", weight:35 },
-  { nombre:"Células Básicas", rareza:"comun", weight:30 },
-  { nombre:"Amuleto de Hueso", rareza:"poco_comun", weight:20 },
-  { nombre:"Daga Ancestral", rareza:"poco_comun", weight:18 },
-  { nombre:"ADN Adaptativo", rareza:"poco_comun", weight:15 }
-];
+const RECOMPENSAS_POR_RANGO = {
+  S: [
+    { nombre:"Núcleo Estelar", rareza:"legendaria", weight:10 },
+    { nombre:"Artefacto Perdido", rareza:"epica", weight:18 }
+  ],
+  A: [
+    { nombre:"Essencia de Chakra Puro", rareza:"rara", weight:20 },
+    { nombre:"Placa Ancestral", rareza:"epica", weight:12 }
+  ],
+  B: [
+    { nombre:"Pergamino Avanzado", rareza:"rara", weight:25 }
+  ],
+  C: [
+    { nombre:"Repuesto Ritual", rareza:"poco_comun", weight:22 }
+  ],
+  D: [
+    { nombre:"Chatarra Misteriosa", rareza:"comun", weight:50 }
+  ]
+};
+
 const DROPS_BY_RANK = { D:1, C:1, B:2, A:3, S:4 };
 const RAREZA_MODIFIERS = {
   D:{comun:1.2,poco_comun:1.0,rara:0.8,epica:0.4,legendaria:0.2},
@@ -119,18 +163,23 @@ function pickAliasFor(clan, rank) {
   return random(ALIASES_BY_CLAN_RANK.DEFAULT[rank]);
 }
 
+// ---------------------------
+// Mutaciones
+// ---------------------------
 function generateMutation(rango, clan) {
   const mod = MUTACION_MODIFIERS[rango] || MUTACION_MODIFIERS.C;
   let pool = [];
 
-  // ANY
   if (MUTACIONES_POR_CLAN_Y_RANGO.ANY[rango]) {
-    MUTACIONES_POR_CLAN_Y_RANGO.ANY[rango].forEach(m => pool.push({ ...m, weight: m.weight * (mod[m.rareza] ?? 1) }));
+    MUTACIONES_POR_CLAN_Y_RANGO.ANY[rango].forEach(m =>
+      pool.push({ ...m, weight: m.weight * (mod[m.rareza] ?? 1) })
+    );
   }
 
-  // Clan específico
   if (MUTACIONES_POR_CLAN_Y_RANGO[clan] && MUTACIONES_POR_CLAN_Y_RANGO[clan][rango]) {
-    MUTACIONES_POR_CLAN_Y_RANGO[clan][rango].forEach(m => pool.push({ ...m, weight: m.weight * (mod[m.rareza] ?? 1) }));
+    MUTACIONES_POR_CLAN_Y_RANGO[clan][rango].forEach(m =>
+      pool.push({ ...m, weight: m.weight * (mod[m.rareza] ?? 1) })
+    );
   }
 
   return pool.length ? weightedRandom(pool) : { nombre:"Ninguna", titulo:null, efecto:"Sin efecto" };
@@ -139,12 +188,21 @@ function generateMutation(rango, clan) {
 // ---------------------------
 // Recompensas
 // ---------------------------
-function generateRewards(rango, clan) {
+function generateRewards(rango) {
   const drops = DROPS_BY_RANK[rango] || 1;
   const mod = RAREZA_MODIFIERS[rango] || RAREZA_MODIFIERS.C;
-  let pool = REWARD_POOL.map(r => ({ ...r, weight: r.weight * (mod[r.rareza] ?? 1) }));
+
+  const base = RECOMPENSAS_POR_RANGO[rango] || [];
+  if (!base.length) return [];
+
+  const pool = base.map(r => ({
+    ...r,
+    weight: r.weight * (mod[r.rareza] ?? 1)
+  }));
+
   const out = [];
-  for (let i=0; i<drops; i++) out.push(random(pool));
+  for (let i = 0; i < drops; i++) out.push(weightedRandom(pool));
+
   return out;
 }
 
@@ -162,7 +220,7 @@ function generarNemesis() {
   const aliasBase = pickAliasFor(clan, rango);
   const aliasFinal = mutacion.titulo ? `${aliasBase} ${mutacion.titulo}` : aliasBase;
   const quote = random(QUOTES_BY_MOTIVE[motivo] || ["..."]);
-  const recompensas = generateRewards(rango, clan);
+  const recompensas = generateRewards(rango);
 
   return { nombre, clan, rango, ubicacion, roleplays, motivo, alias: aliasFinal, quote, mutacion, recompensas };
 }
