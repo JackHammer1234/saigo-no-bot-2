@@ -218,7 +218,26 @@ function generarNemesis() {
   const motivo = random(MOTIVOS);
   const mutacion = generateMutation(rango, clan);
   const aliasBase = pickAliasFor(clan, rango);
-  const aliasFinal = mutacion.titulo ? `${aliasBase} ${mutacion.titulo}` : aliasBase;
+  // Evitar alias vacíos o strings sin contenido real
+const aliasBaseClean = aliasBase && aliasBase.trim() !== "" ? aliasBase : null;
+
+ // Escoger solo uno: o el aliasBase (título) o el apodo de la mutación
+// Escoger solo uno: o el aliasBase (título) o el apodo de la mutación
+let aliasFinal;
+
+if (mutacion.titulo && mutacion.titulo.trim() !== "" && aliasBaseClean) {
+  // ambos existen -> 50/50
+  aliasFinal = Math.random() < 0.5 ? aliasBaseClean : mutacion.titulo;
+} else if (aliasBaseClean) {
+  aliasFinal = aliasBaseClean; // solo título
+} else if (mutacion.titulo && mutacion.titulo.trim() !== "") {
+  aliasFinal = mutacion.titulo; // solo apodo de mutación
+} else {
+  aliasFinal = "El Sin Título"; // fallback opcional
+}
+
+
+
   const quote = random(QUOTES_BY_MOTIVE[motivo] || ["..."]);
   const recompensas = generateRewards(rango);
 
